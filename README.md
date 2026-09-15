@@ -4,7 +4,7 @@ Rolpon introduces high-accuracy, open-source, roblox character detectors based o
 
 ## Usage
 
-Check out exampled/real_time_inference.py for using the models in real time!
+Check out examples/real_time_inference.py for using the models in real time!
 
 ```python
 from ultralytics import YOLO
