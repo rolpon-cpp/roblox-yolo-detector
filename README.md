@@ -1,3 +1,5 @@
+![RobloxYolo Main Cover Image](assets/roblox_yolo_bg.png)
+
 ## Roblox YOLO26 Overview
 
 Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26's years of computer vision research to produce Roblox detection models suitable for moderation, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
@@ -37,14 +39,20 @@ path = model.export(format="onnx", imgsz=640, dynamic=False, quantize=16)
 
 ## Available Models
 
+![RobloxYolo Cheetah Icon](assets/cheetah.png)
+
 **Cheetah** - YOLO26n model at imgsz 1280.
 Trained on hand-labeled images with an mAP50 of 83% and mAP50-95 of 60%.
 Recommended for real-time inference.
+
+![RobloxYolo Horse Icon](assets/horse.png)
 
 **Horse** - YOLO26s model at imgsz 1024.
 Trained on hand-labeled images mixed with difficult and rigorous synthetic data.
 82 mAP50 and 67 mAP50-95.
 Good for reliability.
+
+![RobloxYolo Orca Icon](assets/orca.png)
 
 **Orca** - YOLO26s model at imgsz 1024.
 Trained similarly to Horse, but with tweaked training parameters to improve performance.
