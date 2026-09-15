@@ -5,27 +5,16 @@ Rolpon introduces high-accuracy, open-source, roblox character detectors based o
 ## Usage
 
 ```python
-
 from ultralytics import YOLO
 
-
-
 # Load a rblx-YOLO model
-
 model = YOLO("models/rblx-yolo-cheetah.pt")
 
-
-
 # Perform object detection on an image
-
 results = model("path/to/image.jpg")  # Predict on an image
-
 results[0].show()  # Display results
 
-
-
 # Export the model to ONNX format for deployment
-
 path = model.export(format="onnx")  # Returns the path to the exported model
 
 ```
@@ -48,59 +37,59 @@ Was trained using hand + syn data.
 ## Documentation
 
 **Labeling Spec**
-→ Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
-→ If multiple characters intersect, attempt to give each character a unique box
-→ Tightest possible bounding boxes, no name tags included
-→ If a avatar is holding a large item or cosmetic item (ex: big wings on back, a huge sword, etc.) the bounding box should only include the visible extends of the avatar's body. If the item is small, it may be included in the bounding box.
-→ large items: items that take up a similar amount of space to the actual character or increase width\height by 40% or more (easily eyeball-able)
-→ ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
-→ If a roblox screenshot contains a painting or object with roblox characters inside it, but the characters are not actual characters, the characters should be ignored as background. Otherwise, all characters should be included.
+- Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
+- If multiple characters intersect, attempt to give each character a unique box
+- Tightest possible bounding boxes, no name tags included
+- If a avatar is holding a large item or cosmetic item (ex: big wings on back, a huge sword, etc.) the bounding box should only include the visible extends of the avatar's body. If the item is small, it may be included in the bounding box.
+- large items: items that take up a similar amount of space to the actual character or increase width\height by 40% or more (easily eyeball-able)
+- ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
+- If a roblox screenshot contains a painting or object with roblox characters inside it, but the characters are not actual characters, the characters should be ignored as background. Otherwise, all characters should be included.
 
 **Dataset Creation**
-→ Copy in hand labeled data
-→ Train/Val Split 80%/20%
-→ Generate icon syn data
-→ Generate BG syn data
-→ Generate regular syn data
+- Copy in hand labeled data
+- Train/Val Split 80%/20%
+- Generate icon syn data
+- Generate BG syn data
+- Generate regular syn data
 
 **Model and Training Trends**
-→ More syn data = better model
-→ External models have a 50/50 chance of being better than COCO
-→ yolo26s.pt works best (for now)
-→ 250 - 400 epochs works best
-→ imgsz 1024 seems to be good
-→ batch 16, workers 8 ideal setup
+- More syn data = better model
+- External models have a 50/50 chance of being better than COCO
+- yolo26s.pt works best (for now)
+- 250 - 400 epochs works best
+- imgsz 1024 seems to be good
+- batch 16, workers 8 ideal setup
 
 **Pain Points**
-→ P: UI/Overlays on top of characters
-→ S: Syn data OR manually collect
+- P: UI/Overlays on top of characters
+- S: Syn data OR manually collect
 
-→ P: Overlapping characters
-→ S: Studio syn/Manual collect
+- P: Overlapping characters
+- S: Studio syn/Manual collect
 
-→ P: UI elements being confused for characters
-→ S: Syn data
+- P: UI elements being confused for characters
+- S: Syn data
 
-→ P: View models
-→ S: Manual collect FPS data OR syn data
+- P: View models
+- S: Manual collect FPS data OR syn data
 
-→ P: Real human faces
-→ S: Grab human faces from online
+- P: Real human faces
+- S: Grab human faces from online
 
-→ P: Close up shots of characters
-→ S: Manual collect
+- P: Close up shots of characters
+- S: Manual collect
 
-→ P: Far shots of characters
-→ S: Studio syn and isle manual collect
+- P: Far shots of characters
+- S: Studio syn and isle manual collect
 
-→ P: Effects/particles on characters
-→ S: Syn data/Studio syn
+- P: Effects/particles on characters
+- S: Syn data/Studio syn
 
-→ P: MM2 Paintings
-→ S: Go into MM2, Doors, Online pictures and manual collect
+- P: MM2 Paintings
+- S: Go into MM2, Doors, Online pictures and manual collect
 
-→ P: Extremely large or odd avatars (wings, arms, etc)
-→ S: Join a hangout game and manual collect
+- P: Extremely large or odd avatars (wings, arms, etc)
+- S: Join a hangout game and manual collect
 
 ## Disclaimers & Disclosures
 
