@@ -1,6 +1,6 @@
 ## Roblox YOLO26 Overview
 
-Rolpon introduces high-accuracy, open-source, roblox character detectors based off the State of the Art YOLO26 SOTA Models.
+Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26's years of computer vision research to produce Roblox detection models suitable for moderation, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
 ## Usage
 
@@ -18,23 +18,38 @@ results[0].show()  # Display results
 
 # Export the model to ONNX format for deployment
 path = model.export(format="onnx")  # Returns the path to the exported model
+```
 
+**Export a Model**
+
+```
+from ultralytics import YOLO
+
+# Load a rblx YOLO model
+model = YOLO("models/rblx-yolo-cheetah.pt")
+
+# Export the model to ONNX format for deployment
+path = model.export(format="onnx", imgsz=640)  # Returns the path to the exported model
+
+# Export the model to TensorRT format for deployment on CUDA
+path = model.export(format="onnx", imgsz=640, dynamic=False, quantize=16)
 ```
 
 ## Available Models
 
 **Cheetah** - YOLO26n model at imgsz 1280.
-This model was trained on hand-labeled images only and had high mAP scores on it's val set (83 mAP50, 60 mAP50-95).
-It is recommended for real time inference since it is nano. Was trained via hand-labeled data only.
+Trained on hand-labeled images with an mAP50 of 83% and mAP50-95 of 60%.
+Recommended for real-time inference.
 
 **Horse** - YOLO26s model at imgsz 1024.
-This is a bit of an older model, however it is still good. It also got high mAP (82 mAP50, 67 mAP50-95)
-This can also be used for real time, and is a reliable model. Was trained using hand + syn data.
+Trained on hand-labeled images mixed with difficult and rigorous synthetic data.
+82 mAP50 and 67 mAP50-95.
+Good for reliability.
 
 **Orca** - YOLO26s model at imgsz 1024.
-This is also an older model but it's very good with 73 mAP50-95 and 90 mAP50.
-This numbers are likely inflated, expect Horse or Cheetah to be better in practice.
-Was trained using hand + syn data.
+Trained similarly to Horse, but with tweaked training parameters to improve performance.
+73 mAP50-95 and 90 mAP50.
+Also good for reliability.
 
 ## Documentation
 
@@ -56,42 +71,44 @@ Was trained using hand + syn data.
 
 **Model and Training Trends**
 - More syn data = better model
-- External models have a 50/50 chance of being better than COCO
 - yolo26s.pt works best (for now)
 - 250 - 400 epochs works best
-- imgsz 1024 seems to be good
-- batch 16, workers 8 ideal setup
+- imgsz 1024-1500 seems to be good
+- batch 12, workers 7 ideal setup for YOLO26s
 
-**Pain Points**
-- P: UI/Overlays on top of characters
-- S: Syn data OR manually collect
+## Pain Points
 
-- P: Overlapping characters
-- S: Studio syn/Manual collect
+List of struggle points with the model and suggested solutions.
 
-- P: UI elements being confused for characters
-- S: Syn data
+*UI/Overlays on top of characters*
+Solution: Synthetically placing UI icons on hand-labeled images OR manually collecting character/UI overlays
 
-- P: View models
-- S: Manual collect FPS data OR syn data
+*Overlapping characters*
+Solution: Synthetically generate data and grab bounding boxes via Studio
 
-- P: Real human faces
-- S: Grab human faces from online
+*UI elements being confused for characters*
+Solution: Synthetically placing UI icons on hand-labeled images
 
-- P: Close up shots of characters
-- S: Manual collect
+*FPS Viewmodels / Arm Animations*
+Solution: Synthetically overlay view models on hand-labeled images or manually collect data from games like Arsenal
 
-- P: Far shots of characters
-- S: Studio syn and isle manual collect
+*Human Faces*
+Solution: Grab real-life pictures of humans and train them as background.
 
-- P: Effects/particles on characters
-- S: Syn data/Studio syn
+*Close up shots of characters*
+Solution: Manual collection using third person camera or going close to people in first person.
 
-- P: MM2 Paintings
-- S: Go into MM2, Doors, Online pictures and manual collect
+*Far shots of characters*
+Solution: Manually collect faraway characters or synthetically generate data via Studio.
 
-- P: Extremely large or odd avatars (wings, arms, etc)
-- S: Join a hangout game and manual collect
+*Effects/particles on characters*
+Solution: Manually collect effect-heavy characters or synthetically generate data via Studio.
+
+*MM2 Paintings*
+Solution: Go into MM2, Doors, Online pictures and manually collect painting pictures
+
+*Extremely large or odd avatars (wings, arms, etc)*
+Solution: Join a hangout game and manually collect pictures
 
 ## Disclaimers & Disclosures
 
