@@ -24,25 +24,18 @@ def cv2_to_pygame(frame):
 cam = dxcam.create(output_color="BGR")
 cam.start(target_fps=240)
 
-os.environ['SDL_VIDEO_WINDOW_POS'] = "-1920,0"
-
 pygame.init()
-screen = pygame.display.set_mode((1920, 1080), pygame.NOFRAME)
+screen = pygame.display.set_mode((640, 480), pygame.NOFRAME)
 screen.set_alpha(128)
 
 hwnd = pygame.display.get_wm_info()["window"]
-win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, win32gui.GetWindowLong(
-    hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
-
-win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, win32gui.GetWindowLong(
-    hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
 
 model = YOLO("../models/rblx-yolo-cheetah.pt", task="detect")
 
 dt = 0
 lt = time.time()
 
-img = np.zeros((1440, 2560, 3), np.uint8)
+img = np.zeros((1, 1, 3), np.uint8)
 
 frame_queue = []
 
@@ -51,26 +44,26 @@ def yolo_detect():
     while running:
 
         fresh_img = cam.get_latest_frame()
-
-        lt = time.time()
-        results = model.track(fresh_img, verbose=False)
-        now = time.time()
-        dt = now - lt
-
-        detections = results[0].boxes
-
-        for i in range(len(detections)):
-            xyxy_tensor = detections[i].xyxy.cpu()
-            xyxy = xyxy_tensor.numpy().squeeze()
-            xmin, ymin, xmax, ymax = xyxy.astype(int)
-
-            classidx = int(detections[i].cls.item())
-
-            conf = detections[i].conf.item()
-
-            cv2.rectangle(fresh_img, (xmin, ymin), (xmax, ymax), (0, int(255 * conf), int(255 * conf)), 4)
-            cv2.putText(fresh_img, "conf: " + str(int(conf * 100)), (xmin, ymin - 20), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                        (255 if classidx == 0 else 0, 255, 255), 2)
+        if fresh_img is not None:
+            lt = time.time()
+            results = model.predict(fresh_img, verbose=False)
+            now = time.time()
+            dt = now - lt
+    
+            detections = results[0].boxes
+    
+            for i in range(len(detections)):
+                xyxy_tensor = detections[i].xyxy.cpu()
+                xyxy = xyxy_tensor.numpy().squeeze()
+                xmin, ymin, xmax, ymax = xyxy.astype(int)
+    
+                classidx = int(detections[i].cls.item())
+    
+                conf = detections[i].conf.item()
+    
+                cv2.rectangle(fresh_img, (xmin, ymin), (xmax, ymax), (0, int(255 * conf), int(255 * conf)), 4)
+                cv2.putText(fresh_img, "conf: " + str(int(conf * 100)), (xmin, ymin - 20), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (255 if classidx == 0 else 0, 255, 255), 2)
 
         img = fresh_img
     cam.stop()
@@ -84,8 +77,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    pyg_img = cv2_to_pygame(cv2.resize(img,(1920,1080)))
-    screen.blit(pyg_img,(0,0))
+    if img is not None:
+        pyg_img = cv2_to_pygame(cv2.resize(img,(640,480)))
+        screen.blit(pyg_img,(0,0))
     pygame.display.update()
 
 pygame.quit()
