@@ -4,14 +4,16 @@ Rolpon introduces high-accuracy, open-source, roblox character detectors based o
 
 ## Usage
 
+Check out exampled/real_time_inference.py for using the models in real time!
+
 ```python
 from ultralytics import YOLO
 
-# Load a rblx-YOLO model
+# Load a rblx YOLO model
 model = YOLO("models/rblx-yolo-cheetah.pt")
 
 # Perform object detection on an image
-results = model("path/to/image.jpg")  # Predict on an image
+results = model("sample_images/image0.png")  # Predict on an image
 results[0].show()  # Display results
 
 # Export the model to ONNX format for deployment
