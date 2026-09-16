@@ -1,6 +1,7 @@
 opencv-python
 dxcam
+numpy
 keyboard
 pygame-ce
 ultralytics
-win32api
+pywin32
