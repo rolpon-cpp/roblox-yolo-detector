@@ -17,14 +17,11 @@ model = YOLO("models/rblx-yolo-cheetah.pt")
 # Perform object detection on an image
 results = model("sample_images/image0.png")  # Predict on an image
 results[0].show()  # Display results
-
-# Export the model to ONNX format for deployment
-path = model.export(format="onnx")  # Returns the path to the exported model
 ```
 
 **Export a Model**
 
-```
+```python
 from ultralytics import YOLO
 
 # Load a rblx YOLO model
@@ -89,33 +86,43 @@ Also good for reliability.
 List of struggle points with the model and suggested solutions.
 
 *UI/Overlays on top of characters*
+
 Solution: Synthetically placing UI icons on hand-labeled images OR manually collecting character/UI overlays
 
 *Overlapping characters*
+
 Solution: Synthetically generate data and grab bounding boxes via Studio
 
 *UI elements being confused for characters*
+
 Solution: Synthetically placing UI icons on hand-labeled images
 
 *FPS Viewmodels / Arm Animations*
+
 Solution: Synthetically overlay view models on hand-labeled images or manually collect data from games like Arsenal
 
 *Human Faces*
+
 Solution: Grab real-life pictures of humans and train them as background.
 
 *Close up shots of characters*
+
 Solution: Manual collection using third person camera or going close to people in first person.
 
 *Far shots of characters*
+
 Solution: Manually collect faraway characters or synthetically generate data via Studio.
 
 *Effects/particles on characters*
+
 Solution: Manually collect effect-heavy characters or synthetically generate data via Studio.
 
 *MM2 Paintings*
+
 Solution: Go into MM2, Doors, Online pictures and manually collect painting pictures
 
 *Extremely large or odd avatars (wings, arms, etc)*
+
 Solution: Join a hangout game and manually collect pictures
 
 ## Disclaimers & Disclosures
