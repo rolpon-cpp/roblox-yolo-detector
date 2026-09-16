@@ -56,6 +56,20 @@ Trained similarly to Horse, but with tweaked training parameters to improve perf
 73 mAP50-95 and 90 mAP50.
 Also good for reliability.
 
+## Training
+
+The dataset is public on Roboflow. You will need a beefy computer or Google Colab to train a model.
+Dataset Link: https://universe.roboflow.com/rolpon/roblox-yolo26-detector
+
+```python
+from ultralytics import YOLO
+
+# Load a YOLO model from COCO
+model = YOLO("yolo26s.pt")
+
+model.train(data="data.yaml", epochs=300, patience=50)
+```
+
 ## Documentation
 
 **Labeling Spec**
