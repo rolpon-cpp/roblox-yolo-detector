@@ -7,6 +7,7 @@ Roblox-YOLO26 are a set of high-accuracy Roblox character detection models devel
 ## Usage
 
 Check out examples/real_time_inference.py for using the models in real time!
+Make sure to export to ONNX or TensorRT if you plan to use these models in real time.
 
 ```python
 from ultralytics import YOLO
@@ -67,7 +68,8 @@ from ultralytics import YOLO
 # Load a YOLO model from COCO
 model = YOLO("yolo26s.pt")
 
-model.train(data="data.yaml", epochs=300, patience=50)
+# Train a YOLO model
+model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom")
 ```
 
 ## Documentation
