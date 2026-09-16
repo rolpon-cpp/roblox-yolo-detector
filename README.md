@@ -40,20 +40,26 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 
 ## Available Models
 
+<p align="center">
 ![RobloxYolo Cheetah Model Icon](assets/cheetah.png)
+</p>
 
 **Cheetah** - YOLO26n model at imgsz 1280.
 Trained on hand-labeled images with an mAP50 of 83% and mAP50-95 of 60%.
 Recommended for real-time inference.
 
+<p align="center">
 ![RobloxYolo Horse Model Icon](assets/horse.png)
+</p>
 
 **Horse** - YOLO26s model at imgsz 1024.
 Trained on hand-labeled images mixed with difficult and rigorous synthetic data.
 82 mAP50 and 67 mAP50-95.
 Good for reliability.
 
+<p align="center">
 ![RobloxYolo Orca Model Icon](assets/orca.png)
+</p>
 
 **Orca** - YOLO26s model at imgsz 1024.
 Trained similarly to Horse, but with tweaked training parameters to improve performance.
