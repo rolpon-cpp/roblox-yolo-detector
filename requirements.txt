@@ -1,0 +1,6 @@
+opencv-python
+dxcam
+keyboard
+pygame-ce
+ultralytics
+win32api
