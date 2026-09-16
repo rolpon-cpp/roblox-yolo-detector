@@ -4,7 +4,7 @@
 
 Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 hybrid architecture and years of computer vision research to produce general purpose Roblox detection models suitable for moderation, bot, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
-## Usage
+## Usage & Showcase
 
 Check out examples/real_time_inference.py for using the models in real time!
 Make sure to export to ONNX or TensorRT if you plan to use these models in real time.
@@ -17,7 +17,7 @@ from ultralytics import YOLO
 model = YOLO("models/rblx-yolo-cheetah.pt")
 
 # Perform object detection on an image
-results = model("sample_images/image0.png")  # Predict on an image
+results = model("sample_images/image1.png")  # Predict on an image
 results[0].show()  # Display results
 ```
 
@@ -35,6 +35,8 @@ path = model.export(format="onnx")  # Returns the path to the exported model
 # Export the model to TensorRT format for deployment on CUDA
 path = model.export(format="engine", dynamic=False, quantize=16)
 ```
+
+![RobloxYolo Detection Sample Image](assets/detections.png)
 
 ## Available Models
 

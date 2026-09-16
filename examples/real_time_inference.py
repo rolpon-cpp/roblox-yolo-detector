@@ -1,11 +1,8 @@
 import threading
 import dxcam
-import os
 import cv2
 import time
 import numpy as np
-import win32gui
-import win32con
 import keyboard
 import pygame
 from ultralytics import YOLO
@@ -28,8 +25,6 @@ pygame.init()
 screen = pygame.display.set_mode((640, 480), pygame.NOFRAME)
 screen.set_alpha(128)
 
-hwnd = pygame.display.get_wm_info()["window"]
-
 model = YOLO("../models/rblx-yolo-cheetah.pt", task="detect")
 
 dt = 0
@@ -37,19 +32,16 @@ lt = time.time()
 
 img = np.zeros((1, 1, 3), np.uint8)
 
-frame_queue = []
-
 def yolo_detect():
     global running,dt,lt,img
     while running:
+        lt = time.time()
+        now = time.time()
+        dt = now - lt
 
         fresh_img = cam.get_latest_frame()
         if fresh_img is not None:
-            lt = time.time()
             results = model.predict(fresh_img, verbose=False)
-            now = time.time()
-            dt = now - lt
-    
             detections = results[0].boxes
     
             for i in range(len(detections)):

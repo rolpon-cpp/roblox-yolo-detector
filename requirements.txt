@@ -4,4 +4,3 @@ numpy
 keyboard
 pygame-ce
 ultralytics
-pywin32
