@@ -2,12 +2,13 @@
 
 ## Roblox YOLO26 Overview
 
-Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26's years of computer vision research to produce Roblox detection models suitable for moderation, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
+Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 hybrid architecture and years of computer vision research to produce general purpose Roblox detection models suitable for moderation, bot, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
 ## Usage
 
 Check out examples/real_time_inference.py for using the models in real time!
 Make sure to export to ONNX or TensorRT if you plan to use these models in real time.
+The models only have 1 class, "character". Detects both alive and dead roblox characters.
 
 ```python
 from ultralytics import YOLO
@@ -29,10 +30,10 @@ from ultralytics import YOLO
 model = YOLO("models/rblx-yolo-cheetah.pt")
 
 # Export the model to ONNX format for deployment
-path = model.export(format="onnx", imgsz=640)  # Returns the path to the exported model
+path = model.export(format="onnx")  # Returns the path to the exported model
 
 # Export the model to TensorRT format for deployment on CUDA
-path = model.export(format="onnx", imgsz=640, dynamic=False, quantize=16)
+path = model.export(format="engine", dynamic=False, quantize=16)
 ```
 
 ## Available Models
@@ -143,6 +144,5 @@ Solution: Join a hangout game and manually collect pictures
 
 ## Disclaimers & Disclosures
 
-Claude AI was used to assist in the planning, use, and production of these AI models.
-Rolpon does not condone cheating, hacking, or exploiting on Roblox. These models were developed for educational and hobbyist purposes.
+Claude AI was used to assist in the planning, use, and production of these AI models. Rolpon does not condone cheating, hacking, or exploiting on Roblox. These models were developed for educational and hobbyist purposes.
 Rolpon is not responsible for any potential malicious use of these tools.
