@@ -59,6 +59,15 @@ Trained on hand-labeled images with an mAP50 of 74.7% and mAP50-95 of 53%.
 Good for real-time inference.
 
 <p align="center">
+<img src="assets/rabbit.png" alt="RobloxYolo Rabbit Model Icon" width=220/>
+</p>
+
+**Rabbit** - YOLO26n model at imgsz 640.
+Fastest model yet, recommended for real-time inference on lower-end GPUs.
+64.4% mAP50 and 41.1% mAP50-95.
+Trained on human-only data with augmentation settings turned up.
+
+<p align="center">
 <img src="assets/horse.png" alt="RobloxYolo Horse Model Icon" width=220/>
 </p>
 
