@@ -1,8 +1,8 @@
 ![RobloxYolo Main Cover Image](assets/roblox_yolo_bg.png)
 
-## Roblox YOLO26 Overview
+## Roblox YOLO Overview
 
-Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 hybrid architecture and years of computer vision research to produce general purpose Roblox detection models suitable for moderation, bot, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
+Roblox-YOLO are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 to produce general purpose Roblox detection models suitable for moderation, automation, and accessibility usages. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
 ## Usage & Showcase
 
