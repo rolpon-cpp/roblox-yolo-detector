@@ -1,8 +1,8 @@
 ![RobloxYolo Main Cover Image](assets/roblox_yolo_bg.png)
 
-## Roblox YOLO26 Overview
+## Roblox YOLO Overview
 
-Roblox-YOLO26 are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 hybrid architecture and years of computer vision research to produce general purpose Roblox detection models suitable for moderation, bot, automation, and accessibility purposes. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
+Roblox-YOLO are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 to produce general purpose Roblox detection models suitable for autonomous bots. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
 ## Usage & Showcase
 
@@ -40,14 +40,14 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 
 ## Available Models
 
-*Note: mAP numbers were determined via the 200 image dataset in sample_images*
+*Note: mAP numbers were determined via the 200 image test set.*
 
 <p align="center">
 <img src="assets/orca.png" alt="RobloxYolo Orca Model Icon" width=220/>
 </p>
 
 **Orca** - YOLO26s model at imgsz 1536.
-Most powerful and accurate model, getting 79% mAP50 and 58.7% mAP50-95 on a test set.
+Most powerful and accurate model, getting 79% mAP50 and 58.7% mAP50-95.
 Trained on human-only data with augmentation settings turned up.
 
 <p align="center">
@@ -80,6 +80,7 @@ Good for reliability.
 
 The dataset is public on Roboflow. You will need a beefy computer or Google Colab to train a model.
 Dataset Link: https://universe.roboflow.com/rolpon/roblox-yolo26-detector
+Test Set Link: https://universe.roboflow.com/rolpon/publictestset
 
 ```python
 from ultralytics import YOLO
@@ -162,5 +163,4 @@ Solution: Join a hangout game and manually collect pictures
 
 ## Disclaimers & Disclosures
 
-Claude AI was used to assist in the planning, use, and production of these AI models. Rolpon does not condone cheating, hacking, or exploiting on Roblox. These models were developed for educational and hobbyist purposes.
-Rolpon is not responsible for any potential malicious use of these tools.
+Claude AI was used to assist in the planning, use, and production of these AI models. These models can be used for aimbot purposes, and I will not ban those uses. I will, however, severely discourage them. I will not accept aimbot related changes. These models were developed for hobbyist and utility purposes, not to cheat. Aimbotting on Roblox via YOLO and macro programs violates Roblox ToS and could result in a ban.
