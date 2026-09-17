@@ -40,7 +40,7 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 
 ## Available Models
 
-*Note: mAP numbers were determined via the 200 image dataset in sample_images*
+*Note: mAP numbers were determined via the 200 image test set*
 
 <p align="center">
 <img src="assets/orca.png" alt="RobloxYolo Orca Model Icon" width=220/>
@@ -71,6 +71,7 @@ Good for reliability.
 
 The dataset is public on Roboflow. You will need a beefy computer or Google Colab to train a model.
 Dataset Link: https://universe.roboflow.com/rolpon/roblox-yolo26-detector
+Test Set Link: https://universe.roboflow.com/rolpon/publictestset
 
 ```python
 from ultralytics import YOLO
