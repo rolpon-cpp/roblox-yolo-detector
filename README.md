@@ -40,14 +40,14 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 
 ## Available Models
 
-*Note: mAP numbers were determined via the 200 image test set*
+*Note: mAP numbers were determined via the 200 image test set.*
 
 <p align="center">
 <img src="assets/orca.png" alt="RobloxYolo Orca Model Icon" width=220/>
 </p>
 
 **Orca** - YOLO26s model at imgsz 1536.
-Most powerful and accurate model, getting 79% mAP50 and 58.7% mAP50-95 on a test set.
+Most powerful and accurate model, getting 79% mAP50 and 58.7% mAP50-95.
 Trained on human-only data with augmentation settings turned up.
 
 <p align="center">
