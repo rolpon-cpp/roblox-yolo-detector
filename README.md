@@ -2,7 +2,7 @@
 
 ## Roblox YOLO Overview
 
-Roblox-YOLO are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 to produce general purpose Roblox detection models suitable for moderation, automation, and accessibility usages. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
+Roblox-YOLO are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 to produce general purpose Roblox detection models suitable for autonomous bots. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
 ## Usage & Showcase
 
@@ -154,5 +154,4 @@ Solution: Join a hangout game and manually collect pictures
 
 ## Disclaimers & Disclosures
 
-Claude AI was used to assist in the planning, use, and production of these AI models. Rolpon does not condone cheating, hacking, or exploiting on Roblox. These models were developed for educational and hobbyist purposes.
-Rolpon is not responsible for any potential malicious use of these tools.
+Claude AI was used to assist in the planning, use, and production of these AI models. These models can be used for aimbot purposes, and I will not ban those uses. I will, however, severely discourage them. I will not accept aimbot related changes. These models were developed for hobbyist and utility purposes, not to cheat.
