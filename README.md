@@ -40,31 +40,32 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 
 ## Available Models
 
+*Note: mAP numbers were determined via the 200 image dataset in sample_images*
+
 <p align="center">
- <img src="assets/cheetah.png" alt="RobloxYolo Cheetah Model Icon" width=160/>
+<img src="assets/orca.png" alt="RobloxYolo Orca Model Icon" width=220/>
+</p>
+
+**Orca** - YOLO26s model at imgsz 1536.
+Most powerful and accurate model, getting 79% mAP50 and 58.7% mAP50-95 on a test set.
+Trained on human-only data with augmentation settings turned up.
+
+<p align="center">
+ <img src="assets/cheetah.png" alt="RobloxYolo Cheetah Model Icon" width=220/>
 </p>
 
 **Cheetah** - YOLO26n model at imgsz 1280.
-Trained on hand-labeled images with an mAP50 of 83% and mAP50-95 of 60%.
-Recommended for real-time inference.
+Trained on hand-labeled images with an mAP50 of 74.7% and mAP50-95 of 53%.
+Good for real-time inference.
 
 <p align="center">
-<img src="assets/horse.png" alt="RobloxYolo Horse Model Icon" width=160/>
+<img src="assets/horse.png" alt="RobloxYolo Horse Model Icon" width=220/>
 </p>
 
 **Horse** - YOLO26s model at imgsz 1024.
 Trained on hand-labeled images mixed with difficult and rigorous synthetic data.
-82 mAP50 and 67 mAP50-95.
+68.5% mAP50 and 50.7% mAP50-95.
 Good for reliability.
-
-<p align="center">
-<img src="assets/orca.png" alt="RobloxYolo Orca Model Icon" width=160/>
-</p>
-
-**Orca** - YOLO26s model at imgsz 1024.
-Trained similarly to Horse, but with tweaked training parameters to improve performance.
-73 mAP50-95 and 90 mAP50.
-Also good for reliability.
 
 ## Training
 
