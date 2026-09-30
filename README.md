@@ -1,10 +1,10 @@
 ![RobloxYolo Main Cover Image](assets/roblox_yolo_bg.png)
 
-## Roblox YOLO Overview
+# Roblox YOLO Overview
 
 Roblox-YOLO are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 to produce general purpose Roblox detection models suitable for autonomous bots. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
 
-## Usage & Showcase
+# Usage & Showcase
 
 Check out examples/real_time_inference.py for using the models in real time!
 Make sure to export to ONNX or TensorRT if you plan to use these models in real time.
@@ -38,7 +38,7 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 
 ![RobloxYolo Detection Sample Image](assets/detections.png)
 
-## Available Models
+# Available Models
 
 *Note: mAP numbers were determined via the 200 image test set.*
 
@@ -47,7 +47,7 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 </p>
 
 **Orca** - YOLO26s model at imgsz 1536.
-Most powerful and accurate model, getting 79% mAP50 and 58.7% mAP50-95.
+Most powerful and accurate model, getting 81.6% mAP50 and 62.3% mAP50-95.
 Trained on human-only data with augmentation settings turned up.
 
 <p align="center">
@@ -76,7 +76,7 @@ Trained on hand-labeled images mixed with difficult and rigorous synthetic data.
 68.5% mAP50 and 50.7% mAP50-95.
 Good for reliability.
 
-## Training
+# Training
 
 The dataset is public on Roboflow. You will need a beefy computer or Google Colab to train a model.
 Dataset Link: https://universe.roboflow.com/rolpon/roblox-yolo26-detector
@@ -92,9 +92,9 @@ model = YOLO("yolo26s.pt")
 model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom")
 ```
 
-## Documentation
+# Documentation
 
-# LABELING SPEC
+## Labeling Spec
 
 - Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
 - If multiple characters intersect, attempt to give each character a unique box
@@ -106,19 +106,19 @@ model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom"
 - Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
 - Dead characters are accounted for, either in their own class or merged with the character class.
 
-# DATASET CREATION
+## Dataset Creation
 
 - Copy in hand labeled data
 - Train/Val Split 80%/20%
 
-# MODEL/TRAINING TRENDS
+## Model/Training Trends
 
 - yolo26s.pt works best
 - 250 - 300 epochs works best
 - imgsz 1536 seems to be good
 - batch 10, workers 7 ideal setup
 
-## PAIN POINTS
+## Pain Points
 
 | | Pain Point | Potential Solution |
 |---|---|---|
@@ -131,8 +131,7 @@ model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom"
 | P | Effects/particles on characters | Syn data/Studio syn |
 | P | MM2 Paintings | Go into MM2, Doors, Online pictures and manual collect |
 
-
-## Disclaimers & Disclosures
+# Disclaimers & Disclosures
 
 Claude AI was used to assist in the planning, use, and production of these AI models. These models can be used for aimbot purposes, and I will not ban those uses. I will, however, severely discourage them. I will not accept aimbot related changes. These models were developed for hobbyist and utility purposes, not to cheat. Aimbotting on Roblox via YOLO and macro programs violates Roblox ToS and could result in a ban.
 
