@@ -94,73 +94,51 @@ model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom"
 
 ## Documentation
 
-**Labeling Spec**
-- Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
-- If multiple characters intersect, attempt to give each character a unique box
-- Tightest possible bounding boxes, no name tags included
-- If a avatar is holding a large item or cosmetic item (ex: big wings on back, a huge sword, etc.) the bounding box should only include the visible extends of the avatar's body. If the item is small, it may be included in the bounding box.
-- large items: items that take up a similar amount of space to the actual character or increase width\height by 40% or more (easily eyeball-able)
-- ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
-- If a roblox screenshot contains a painting or object with roblox characters inside it, but the characters are not actual characters, the characters should be ignored as background. Otherwise, all characters should be included.
+LABELING SPEC:
+→ Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
+→ If multiple characters intersect, attempt to give each character a unique box
+→ Tightest possible bounding boxes, no name tags included
+→ If individual bounding boxes are truly not possible, do single-blob box.
+→ Bounding boxes include ALL extents of a character, including wings, large arms, accessories, etc. Particles, however, will not be counted.
+→ Highlights of characters will be counted.
+→ ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
+→ Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
+→ Dead characters are accounted for, either in their own class or merged with the character class.
+DATASET CREATION:
+→ Copy in hand labeled data
+→ Add in percents of merc, randomizer, and external
+→ Train/Val Split 80%/20%
+→ Generate icon syn data
+→ Generate BG syn data
+→ Generate regular syn data
+MODEL/TRAINING TRENDS
+→ More syn data = better model
+→ External models have a 50/50 chance of being better than COCO
+→ yolo26s.pt works best (for now)
+→ 250 - 400 epochs works best
+→ imgsz 1024 seems to be good
+→ batch 16, workers 8 ideal setup
+PAIN POINTS
+→ P: UI/Overlays ontop of characters
+→ S: Syn data OR manually collect
+→ P: Overlapping characters
+→ S: Studio syn/Manual collect
+→ P: Small Trees/Blocky Objects false positives
+→ S: Manual collect
+→ P: UI elements being confused for characters
+→ S: Syn data
+→ P: Close up shots of characters
+→ S: Manual collect
+→ P: Far shots of characters
+→ S: Studio syn and isle manual collect
+→ P: Effects/particles on characters
+→ S: Syn data/Studio syn
+→ P: MM2 Paintings
+→ S: Go into MM2, Doors, Online pictures and manual collect
 
-**Dataset Creation**
-- Copy in hand labeled data
-- Train/Val Split 80%/20%
-- Generate icon syn data
-- Generate BG syn data
-- Generate regular syn data
-
-**Model and Training Trends**
-- More syn data = better model
-- yolo26s.pt works best (for now)
-- 250 - 400 epochs works best
-- imgsz 1024-1500 seems to be good
-- batch 12, workers 7 ideal setup for YOLO26s
-
-## Pain Points
-
-List of struggle points with the model and suggested solutions.
-
-*UI/Overlays on top of characters*
-
-Solution: Synthetically placing UI icons on hand-labeled images OR manually collecting character/UI overlays
-
-*Overlapping characters*
-
-Solution: Synthetically generate data and grab bounding boxes via Studio
-
-*UI elements being confused for characters*
-
-Solution: Synthetically placing UI icons on hand-labeled images
-
-*FPS Viewmodels / Arm Animations*
-
-Solution: Synthetically overlay view models on hand-labeled images or manually collect data from games like Arsenal
-
-*Human Faces*
-
-Solution: Grab real-life pictures of humans and train them as background.
-
-*Close up shots of characters*
-
-Solution: Manual collection using third person camera or going close to people in first person.
-
-*Far shots of characters*
-
-Solution: Manually collect faraway characters or synthetically generate data via Studio.
-
-*Effects/particles on characters*
-
-Solution: Manually collect effect-heavy characters or synthetically generate data via Studio.
-
-*MM2 Paintings*
-
-Solution: Go into MM2, Doors, Online pictures and manually collect painting pictures
-
-*Extremely large or odd avatars (wings, arms, etc)*
-
-Solution: Join a hangout game and manually collect pictures
 
 ## Disclaimers & Disclosures
 
 Claude AI was used to assist in the planning, use, and production of these AI models. These models can be used for aimbot purposes, and I will not ban those uses. I will, however, severely discourage them. I will not accept aimbot related changes. These models were developed for hobbyist and utility purposes, not to cheat. Aimbotting on Roblox via YOLO and macro programs violates Roblox ToS and could result in a ban.
+
+See me labeling data: https://youtu.be/3P5Tr6R4R_I
