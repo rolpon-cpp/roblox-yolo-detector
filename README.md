@@ -94,47 +94,42 @@ model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom"
 
 ## Documentation
 
-LABELING SPEC:
-→ Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
-→ If multiple characters intersect, attempt to give each character a unique box
-→ Tightest possible bounding boxes, no name tags included
-→ If individual bounding boxes are truly not possible, do single-blob box.
-→ Bounding boxes include ALL extents of a character, including wings, large arms, accessories, etc. Particles, however, will not be counted.
-→ Highlights of characters will be counted.
-→ ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
-→ Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
-→ Dead characters are accounted for, either in their own class or merged with the character class.
-DATASET CREATION:
-→ Copy in hand labeled data
-→ Add in percents of merc, randomizer, and external
-→ Train/Val Split 80%/20%
-→ Generate icon syn data
-→ Generate BG syn data
-→ Generate regular syn data
-MODEL/TRAINING TRENDS
-→ More syn data = better model
-→ External models have a 50/50 chance of being better than COCO
-→ yolo26s.pt works best (for now)
-→ 250 - 400 epochs works best
-→ imgsz 1024 seems to be good
-→ batch 16, workers 8 ideal setup
-PAIN POINTS
-→ P: UI/Overlays ontop of characters
-→ S: Syn data OR manually collect
-→ P: Overlapping characters
-→ S: Studio syn/Manual collect
-→ P: Small Trees/Blocky Objects false positives
-→ S: Manual collect
-→ P: UI elements being confused for characters
-→ S: Syn data
-→ P: Close up shots of characters
-→ S: Manual collect
-→ P: Far shots of characters
-→ S: Studio syn and isle manual collect
-→ P: Effects/particles on characters
-→ S: Syn data/Studio syn
-→ P: MM2 Paintings
-→ S: Go into MM2, Doors, Online pictures and manual collect
+# LABELING SPEC
+
+- Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
+- If multiple characters intersect, attempt to give each character a unique box
+- Tightest possible bounding boxes, no name tags included
+- If individual bounding boxes are truly not possible, do single-blob box.
+- Bounding boxes include ALL extents of a character, including wings, large arms, accessories, etc. Particles, however, will not be counted.
+- Highlights of characters will be counted.
+- ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
+- Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
+- Dead characters are accounted for, either in their own class or merged with the character class.
+
+# DATASET CREATION
+
+- Copy in hand labeled data
+- Train/Val Split 80%/20%
+
+# MODEL/TRAINING TRENDS
+
+- yolo26s.pt works best
+- 250 - 300 epochs works best
+- imgsz 1536 seems to be good
+- batch 10, workers 7 ideal setup
+
+## PAIN POINTS
+
+| | Pain Point | Potential Solution |
+|---|---|---|
+| P | UI/Overlays ontop of characters | Syn data OR manually collect |
+| P | Overlapping characters | Studio syn/Manual collect |
+| P | Small Trees/Blocky Objects false positives | Manual collect |
+| P | UI elements being confused for characters | Syn data |
+| P | Close up shots of characters | Manual collect |
+| P | Far shots of characters | Studio syn and isle manual collect |
+| P | Effects/particles on characters | Syn data/Studio syn |
+| P | MM2 Paintings | Go into MM2, Doors, Online pictures and manual collect |
 
 
 ## Disclaimers & Disclosures
