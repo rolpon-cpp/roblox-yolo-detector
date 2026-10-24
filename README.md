@@ -54,7 +54,7 @@ Trained on human-only data with augmentation settings turned up.
  <img src="assets/cheetah.png" alt="RobloxYolo Cheetah Model Icon" width=220/>
 </p>
 
-**Cheetah** - YOLO26n model at imgsz 1280.
+**Cheetah** - YOLO26n model at imgsz 1024.
 Trained on hand-labeled images with an mAP50 of 78.4% and mAP50-95 of 59.3%.
 Good for real-time inference.
 
