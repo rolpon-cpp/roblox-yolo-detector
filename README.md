@@ -47,7 +47,7 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 </p>
 
 **Orca** - YOLO26s model at imgsz 1536.
-Most powerful and accurate model, getting 81.6% mAP50 and 62.3% mAP50-95.
+Most powerful and accurate model, getting 85.7% mAP50 and 68.8% mAP50-95.
 Trained on human-only data with augmentation settings turned up.
 
 <p align="center">
@@ -55,7 +55,7 @@ Trained on human-only data with augmentation settings turned up.
 </p>
 
 **Cheetah** - YOLO26n model at imgsz 1280.
-Trained on hand-labeled images with an mAP50 of 74.7% and mAP50-95 of 53%.
+Trained on hand-labeled images with an mAP50 of 78.4% and mAP50-95 of 59.3%.
 Good for real-time inference.
 
 <p align="center">
@@ -95,16 +95,15 @@ model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom"
 # Documentation
 
 ## Labeling Spec
-
-- Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
-- If multiple characters intersect, attempt to give each character a unique box
-- Tightest possible bounding boxes, no name tags included
-- If individual bounding boxes are truly not possible, do single-blob box.
-- Bounding boxes include ALL extents of a character, including wings, large arms, accessories, etc. Particles, however, will not be counted.
-- Highlights of characters will be counted.
-- ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
-- Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
-- Dead characters are accounted for, either in their own class or merged with the character class.
+→ Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
+→ If multiple characters intersect, attempt to give each character a unique box
+→ Tightest possible bounding boxes, no name tags included
+→ If individual bounding boxes are truly not possible, do single-blob box.
+→ Bounding boxes include ALL extents of a character, including wings, large arms, accessories, etc. Particles, however, will not be counted.
+→ Highlights of characters will be counted.
+→ ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
+→ Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
+→ Dead characters are accounted for, either in their own class or merged with the character class.
 
 ## Dataset Creation
 
