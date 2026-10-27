@@ -139,8 +139,8 @@ The dataset is public on Roboflow. You will need a capable GPU machine or Google
 
 | Resource | Link |
 |---|---|
-| Dataset | https://universe.roboflow.com/rolpon/roblox-yolo26-detector |
-| Test Set | https://universe.roboflow.com/rolpon/publictestset |
+| Dataset | https://universe.roboflow.com/rolpon/roblox-yolo26-dataset |
+| Test Set | https://universe.roboflow.com/rolpon/roblox-public-200img-set |
 
 ```python
 from ultralytics import YOLO
