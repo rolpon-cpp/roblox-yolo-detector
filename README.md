@@ -1,14 +1,57 @@
 ![RobloxYolo Main Cover Image](assets/roblox_yolo_bg.png)
 
-# Roblox YOLO Overview
+<h1 align="center">Roblox YOLO</h1>
 
-Roblox-YOLO are a set of high-accuracy Roblox character detection models developed by Rolpon. They take advantage of YOLO26 to produce general purpose Roblox detection models suitable for autonomous bots. These models have been rigorously trained on a variety of Roblox games to ensure complete platform capable detection. 
+<p align="center">
+  <b>High-accuracy Roblox character detection, built on YOLO26.</b><br/>
+  Four models, one class, from real-time lightweight to maximum accuracy.
+</p>
 
-# Usage & Showcase
+<p align="center">
+  <img src="https://img.shields.io/badge/YOLO-26-blue" alt="YOLO26"/>
+  <img src="https://img.shields.io/badge/task-object%20detection-green" alt="Object detection"/>
+  <img src="https://img.shields.io/badge/best%20mAP50-85.7%25-brightgreen" alt="Best mAP50 85.7%"/>
+  <img src="https://img.shields.io/badge/license-see%20LICENSE-lightgrey" alt="License"/>
+</p>
 
-Check out examples/real_time_inference.py for using the models in real time!
-Make sure to export to ONNX or TensorRT if you plan to use these models in real time.
-The models only have 1 class, "character". Detects both alive and dead roblox characters.
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Available Models](#available-models)
+- [Training](#training)
+- [Documentation](#documentation)
+- [Disclaimers & Disclosures](#disclaimers--disclosures)
+
+---
+
+## Overview
+
+Roblox-YOLO is a family of high-accuracy Roblox character detection models developed by Rolpon. Built on YOLO26, they are general purpose detectors suited to autonomous bots and utility tools, and have been trained on a variety of Roblox games to provide detection that holds up across the platform.
+
+**Highlights**
+
+- **Four models** covering the full speed and accuracy range.
+- **Up to 85.7% mAP50** and **68.8% mAP50-95** on a 200 image test set (Orca).
+- **Single class**, `character`, which detects both alive and dead Roblox characters.
+- **Real-time ready** with ONNX and TensorRT export support.
+- **Public dataset and test set** hosted on Roboflow.
+
+![RobloxYolo Detection Sample Image](assets/detections.png)
+
+---
+
+## Quick Start
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run inference on an image:
 
 ```python
 from ultralytics import YOLO
@@ -21,7 +64,12 @@ results = model("sample_images/image1.png")  # Predict on an image
 results[0].show()  # Display results
 ```
 
-**Export a Model**
+### Real-Time Inference
+
+See [`examples/real_time_inference.py`](examples/real_time_inference.py) for a complete real-time example.
+Export to ONNX or TensorRT if you plan to use these models in real time.
+
+### Export a Model
 
 ```python
 from ultralytics import YOLO
@@ -36,51 +84,69 @@ path = model.export(format="onnx")  # Returns the path to the exported model
 path = model.export(format="engine", dynamic=False, quantize=16)
 ```
 
-![RobloxYolo Detection Sample Image](assets/detections.png)
+---
 
-# Available Models
+## Available Models
 
-*Note: mAP numbers were determined via the 200 image test set.*
+> mAP numbers were determined on the 200 image test set.
 
-<p align="center">
-<img src="assets/orca.png" alt="RobloxYolo Orca Model Icon" width=220/>
-</p>
+| Model | Architecture | Image Size | mAP50 | mAP50-95 | Best For |
+|---|---|---|---|---|---|
+| **Orca** | YOLO26s | 1536 | **85.7%** | **68.8%** | Maximum accuracy |
+| **Cheetah** | YOLO26n | 1024 | 78.4% | 59.3% | Real-time inference |
+| **Horse** | YOLO26s | 1024 | 68.5% | 50.7% | Reliability |
+| **Rabbit** | YOLO26n | 640 | 64.4% | 41.1% | Lower-end GPUs |
 
-**Orca** - YOLO26s model at imgsz 1536.
-Most powerful and accurate model, getting 85.7% mAP50 and 68.8% mAP50-95.
-Trained on human-only data with augmentation settings turned up.
+<table>
+<tr>
+<td align="center" width="25%">
+<img src="assets/orca.png" alt="Orca" width="180"/><br/>
+<b>Orca</b>
+</td>
+<td align="center" width="25%">
+<img src="assets/cheetah.png" alt="Cheetah" width="180"/><br/>
+<b>Cheetah</b>
+</td>
+<td align="center" width="25%">
+<img src="assets/horse.png" alt="Horse" width="180"/><br/>
+<b>Horse</b>
+</td>
+<td align="center" width="25%">
+<img src="assets/rabbit.png" alt="Rabbit" width="180"/><br/>
+<b>Rabbit</b>
+</td>
+</tr>
+</table>
 
-<p align="center">
- <img src="assets/cheetah.png" alt="RobloxYolo Cheetah Model Icon" width=220/>
-</p>
+### Orca
 
-**Cheetah** - YOLO26n model at imgsz 1024.
-Trained on hand-labeled images with an mAP50 of 78.4% and mAP50-95 of 59.3%.
-Good for real-time inference.
+The most powerful and accurate model in the family. YOLO26s at imgsz 1536, reaching **85.7% mAP50** and **68.8% mAP50-95**.
 
-<p align="center">
-<img src="assets/rabbit.png" alt="RobloxYolo Rabbit Model Icon" width=220/>
-</p>
+- Trained on **6,000 images** combined with **10,000 distilled images**.
+- Human-only data with augmentation settings turned up.
 
-**Rabbit** - YOLO26n model at imgsz 640.
-Fastest model yet, recommended for real-time inference on lower-end GPUs.
-64.4% mAP50 and 41.1% mAP50-95.
-Trained on human-only data with augmentation settings turned up.
+### Cheetah
 
-<p align="center">
-<img src="assets/horse.png" alt="RobloxYolo Horse Model Icon" width=220/>
-</p>
+YOLO26n at imgsz 1024, trained on hand-labeled images. Reaches 78.4% mAP50 and 59.3% mAP50-95. A strong choice for real-time inference.
 
-**Horse** - YOLO26s model at imgsz 1024.
-Trained on hand-labeled images mixed with difficult and rigorous synthetic data.
-68.5% mAP50 and 50.7% mAP50-95.
-Good for reliability.
+### Horse
 
-# Training
+YOLO26s at imgsz 1024, trained on hand-labeled images mixed with difficult and rigorous synthetic data. Reaches 68.5% mAP50 and 50.7% mAP50-95. Good for reliability.
 
-The dataset is public on Roboflow. You will need a beefy computer or Google Colab to train a model.
-Dataset Link: https://universe.roboflow.com/rolpon/roblox-yolo26-detector
-Test Set Link: https://universe.roboflow.com/rolpon/publictestset
+### Rabbit
+
+YOLO26n at imgsz 640. The fastest model, recommended for real-time inference on lower-end GPUs. Reaches 64.4% mAP50 and 41.1% mAP50-95. Trained on human-only data with augmentation settings turned up.
+
+---
+
+## Training
+
+The dataset is public on Roboflow. You will need a capable GPU machine or Google Colab to train a model.
+
+| Resource | Link |
+|---|---|
+| Dataset | https://universe.roboflow.com/rolpon/roblox-yolo26-detector |
+| Test Set | https://universe.roboflow.com/rolpon/publictestset |
 
 ```python
 from ultralytics import YOLO
@@ -92,46 +158,53 @@ model = YOLO("yolo26s.pt")
 model.train(data="data.yaml", epochs=300, patience=50, name="roblox-yolo-custom")
 ```
 
-# Documentation
+**Training trends**
 
-## Labeling Spec
-→ Try to include all visible pixels of a character (1 box per char) (exceptions, see below)
-→ If multiple characters intersect, attempt to give each character a unique box
-→ Tightest possible bounding boxes, no name tags included
-→ If individual bounding boxes are truly not possible, do single-blob box.
-→ Bounding boxes include ALL extents of a character, including wings, large arms, accessories, etc. Particles, however, will not be counted.
-→ Highlights of characters will be counted.
-→ ALL non-roblox images are background (real life photos, browsers, desktop environment, roblox website, etc)
-→ Fake roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and Player characters counts.
-→ Dead characters are accounted for, either in their own class or merged with the character class.
+- `yolo26s.pt` works best.
+- 250 to 300 epochs works best.
+- imgsz 1536 seems to be good.
+- batch 10, workers 7 is an ideal setup.
 
-## Dataset Creation
+**Dataset creation**
 
-- Copy in hand labeled data
-- Train/Val Split 80%/20%
+1. Copy in hand-labeled data.
+2. Split train/val 80%/20%.
 
-## Model/Training Trends
+---
 
-- yolo26s.pt works best
-- 250 - 300 epochs works best
-- imgsz 1536 seems to be good
-- batch 10, workers 7 ideal setup
+## Documentation
 
-## Pain Points
+### Labeling Spec
 
-| | Pain Point | Potential Solution |
-|---|---|---|
-| P | UI/Overlays ontop of characters | Syn data OR manually collect |
-| P | Overlapping characters | Studio syn/Manual collect |
-| P | Small Trees/Blocky Objects false positives | Manual collect |
-| P | UI elements being confused for characters | Syn data |
-| P | Close up shots of characters | Manual collect |
-| P | Far shots of characters | Studio syn and isle manual collect |
-| P | Effects/particles on characters | Syn data/Studio syn |
-| P | MM2 Paintings | Go into MM2, Doors, Online pictures and manual collect |
+- Include all visible pixels of a character (1 box per character), with the exceptions below.
+- If multiple characters intersect, attempt to give each character a unique box.
+- Use the tightest possible bounding boxes, with no name tags included.
+- If individual bounding boxes are truly not possible, use a single-blob box.
+- Boxes include all extents of a character, including wings, large arms, and accessories. Particles are not counted.
+- Highlights on characters are counted.
+- All non-Roblox images are background (real-life photos, browsers, desktop environments, the Roblox website, etc.).
+- Fake Roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and player characters count.
+- Dead characters are accounted for, either in their own class or merged with the character class.
 
-# Disclaimers & Disclosures
+### Known Pain Points
 
-Claude AI was used to assist in the planning, use, and production of these AI models. These models can be used for aimbot purposes, and I will not ban those uses. I will, however, severely discourage them. I will not accept aimbot related changes. These models were developed for hobbyist and utility purposes, not to cheat. Aimbotting on Roblox via YOLO and macro programs violates Roblox ToS and could result in a ban.
+| Pain Point | Potential Solution |
+|---|---|
+| UI/overlays on top of characters | Synthetic data or manual collection |
+| Overlapping characters | Studio synthetic data or manual collection |
+| Small trees and blocky objects causing false positives | Manual collection |
+| UI elements confused for characters | Synthetic data |
+| Close-up shots of characters | Manual collection |
+| Far shots of characters | Studio synthetic data and Isle manual collection |
+| Effects and particles on characters | Synthetic data or Studio synthetic data |
+| MM2 paintings | Collect from MM2, Doors, and online pictures manually |
 
-See me labeling data: https://youtu.be/3P5Tr6R4R_I
+---
+
+## Disclaimers & Disclosures
+
+Claude AI was used to assist in the planning, use, and production of these AI models.
+
+These models can be used for aimbot purposes, and I will not ban those uses. I will, however, severely discourage them. I will not accept aimbot related changes. These models were developed for hobbyist and utility purposes, not to cheat. Aimbotting on Roblox via YOLO and macro programs violates Roblox ToS and could result in a ban.
+
+Watch the labeling process: https://youtu.be/3P5Tr6R4R_I
