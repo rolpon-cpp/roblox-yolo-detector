@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>High-accuracy Roblox character detection, built on YOLO26.</b><br/>
-  Four models, one class, from real-time lightweight to maximum accuracy.
+  Three models, one class, from real-time lightweight to maximum accuracy.
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@ Roblox-YOLO is a family of high-accuracy Roblox character detection models devel
 
 **Highlights**
 
-- **Four models** covering the full speed and accuracy range.
+- **Three models** covering the full speed and accuracy range.
 - **Up to 85.7% mAP50** and **68.8% mAP50-95** on a 200 image test set (Orca).
 - **Single class**, `character`, which detects both alive and dead Roblox characters.
 - **Real-time ready** with ONNX and TensorRT export support.
@@ -93,27 +93,22 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 | Model | Architecture | Image Size | mAP50 | mAP50-95 | Best For |
 |---|---|---|---|---|---|
 | **Orca** | YOLO26s | 1536 | **85.7%** | **68.8%** | Maximum accuracy |
-| **Cheetah** | YOLO26n | 1024 | 78.4% | 59.3% | Real-time inference |
-| **Horse** | YOLO26s | 1024 | 68.5% | 50.7% | Reliability |
-| **Rabbit** | YOLO26n | 640 | 64.4% | 41.1% | Lower-end GPUs |
+| **Rabbit** | YOLO26n | 1280 | 79.9% | 61.9% | Balance of speed and accuracy |
+| **Cheetah** | YOLO26n | 1024 | 78.4% | 59.3% | Real-time inference, fastest |
 
 <table>
 <tr>
-<td align="center" width="25%">
+<td align="center" width="33%">
 <img src="assets/orca.png" alt="Orca" width="180"/><br/>
 <b>Orca</b>
 </td>
-<td align="center" width="25%">
-<img src="assets/cheetah.png" alt="Cheetah" width="180"/><br/>
-<b>Cheetah</b>
-</td>
-<td align="center" width="25%">
-<img src="assets/horse.png" alt="Horse" width="180"/><br/>
-<b>Horse</b>
-</td>
-<td align="center" width="25%">
+<td align="center" width="33%">
 <img src="assets/rabbit.png" alt="Rabbit" width="180"/><br/>
 <b>Rabbit</b>
+</td>
+<td align="center" width="33%">
+<img src="assets/cheetah.png" alt="Cheetah" width="180"/><br/>
+<b>Cheetah</b>
 </td>
 </tr>
 </table>
@@ -125,17 +120,13 @@ The most powerful and accurate model in the family. YOLO26s at imgsz 1536, reach
 - Trained on **6,000 images** combined with **10,000 distilled images**.
 - Human-only data with augmentation settings turned up.
 
-### Cheetah
-
-YOLO26n at imgsz 1024, trained on hand-labeled images. Reaches 78.4% mAP50 and 59.3% mAP50-95. A strong choice for real-time inference.
-
-### Horse
-
-YOLO26s at imgsz 1024, trained on hand-labeled images mixed with difficult and rigorous synthetic data. Reaches 68.5% mAP50 and 50.7% mAP50-95. Good for reliability.
-
 ### Rabbit
 
-YOLO26n at imgsz 640. The fastest model, recommended for real-time inference on lower-end GPUs. Reaches 64.4% mAP50 and 41.1% mAP50-95. Trained on human-only data with augmentation settings turned up.
+YOLO26n at imgsz 1280. A balance of speed and accuracy, reaching 79.9% mAP50 and 61.9% mAP50-95.
+
+### Cheetah
+
+YOLO26n at imgsz 1024. The fastest model, reaching 78.4% mAP50 and 59.3% mAP50-95. Recommended for real-time inference.
 
 ---
 
