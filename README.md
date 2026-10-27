@@ -113,12 +113,15 @@ path = model.export(format="engine", dynamic=False, quantize=16)
 </tr>
 </table>
 
+### Training Data
+
+All models were originally trained on 5,000 to 6,000 human-labeled images, with augmentation settings turned up.
+
 ### Orca
 
 The most powerful and accurate model in the family. YOLO26s at imgsz 1536, reaching **85.7% mAP50** and **68.8% mAP50-95**.
 
 - Trained on **6,000 images** combined with **10,000 distilled images**.
-- Human-only data with augmentation settings turned up.
 
 ### Rabbit
 
@@ -126,7 +129,7 @@ YOLO26n at imgsz 1280. A balance of speed and accuracy, reaching 79.9% mAP50 and
 
 ### Cheetah
 
-YOLO26n at imgsz 1024. The fastest model, reaching 78.4% mAP50 and 59.3% mAP50-95. Recommended for real-time inference.
+YOLO26n at imgsz 1024. The fastest model, reaching 78.4% mAP50 and 59.3% mAP50-95. Also trained with distillation. Recommended for real-time inference.
 
 ---
 
