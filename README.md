@@ -1,8 +1,17 @@
 ![Roblox YOLO](assets/roblox_yolo_bg.png)
 
-# Roblox YOLO
+<h1 align="center">Roblox YOLO</h1>
 
-Object detection models for Roblox characters, built on [Ultralytics YOLO26](https://github.com/ultralytics/ultralytics).
+<p align="center">
+  Object detection models for Roblox characters, built on <a href="https://github.com/ultralytics/ultralytics">Ultralytics YOLO26</a>.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/YOLO-26-blue" alt="YOLO26"/>
+  <img src="https://img.shields.io/badge/task-object%20detection-green" alt="Object detection"/>
+  <img src="https://img.shields.io/badge/mAP50--95-70.2%25-brightgreen" alt="mAP50-95 70.2%"/>
+  <img src="https://img.shields.io/badge/license-AGPL--3.0-lightgrey" alt="License AGPL-3.0"/>
+</p>
 
 The models detect player and NPC characters in screenshots and video frames using a single class, `character`. Training data covers gameplay from several hundred Roblox games.
 
@@ -53,9 +62,9 @@ model.export(format="engine", dynamic=False, quantize="fp16", batch=1, imgsz=[86
 
 TensorRT engines must be built on the GPU that will run them.
 
-## Models
+<h2 align="center" id="models">Models</h2>
 
-<table>
+<table align="center">
 <tr>
 <td align="center" width="33%"><img src="assets/orca.png" alt="Orca" height="160"/><br/><b>Orca</b></td>
 <td align="center" width="33%"><img src="assets/rabbit.png" alt="Rabbit" height="160"/><br/><b>Rabbit</b></td>
