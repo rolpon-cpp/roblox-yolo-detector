@@ -1,267 +1,247 @@
-![RobloxYolo Main Cover Image](assets/roblox_yolo_bg.png)
+![Roblox YOLO cover image](assets/roblox_yolo_bg.png)
 
 <h1 align="center">Roblox YOLO</h1>
 
 <p align="center">
-  <b>High-accuracy Roblox character detection, built on YOLO26.</b><br/>
-  Three models, one class, from real-time lightweight to maximum accuracy.
+  <b>Roblox character detection models, built on YOLO26.</b><br/>
+  Three sizes: one for accuracy, one for balance, one for speed.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/YOLO-26-blue" alt="YOLO26"/>
   <img src="https://img.shields.io/badge/task-object%20detection-green" alt="Object detection"/>
-  <img src="https://img.shields.io/badge/best%20mAP50-85.7%25-brightgreen" alt="Best mAP50 85.7%"/>
-  <img src="https://img.shields.io/badge/license-see%20LICENSE-lightgrey" alt="License"/>
+  <img src="https://img.shields.io/badge/mAP50--95-70.2%25-brightgreen" alt="mAP50-95 70.2%"/>
+  <img src="https://img.shields.io/badge/license-AGPL--3.0-lightgrey" alt="License AGPL-3.0"/>
 </p>
 
 ---
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [What this is](#what-this-is)
+- [Models](#models)
 - [Quick Start](#quick-start)
-- [Available Models](#available-models)
-- [Speed and Input Size](#speed-and-input-size)
-- [How the Models Were Trained](#how-the-models-were-trained)
-- [Training Your Own](#training-your-own)
-- [Documentation](#documentation)
+- [Performance](#performance)
+- [How they were trained](#how-they-were-trained)
+- [Training your own](#training-your-own)
+- [Labeling spec](#labeling-spec)
+- [Limitations](#limitations)
 - [Disclaimers & Disclosures](#disclaimers--disclosures)
 
 ---
 
-## Overview
+## What this is
 
-Roblox-YOLO is a family of high-accuracy Roblox character detection models developed by Rolpon. Built on YOLO26, they are general purpose detectors suited to autonomous bots and utility tools, and have been trained on a variety of Roblox games to provide detection that holds up across the platform.
+These are object detection models that find Roblox characters in screenshots and video frames. Players, NPCs, alive or dead: there is one class, `character`, and that's it.
 
-**Highlights**
+A detector trained on one game usually falls apart in the next one, so these models are trained on gameplay from hundreds of games and should work wherever you point them. They're a good fit for bots, small tools, analytics, accessibility projects and research.
 
-- **Three models** covering the full speed and accuracy range.
-- **Up to 85.7% mAP50** and **68.8% mAP50-95** on a 200 image test set that no model has trained on (Orca).
-- **Single class**, `character`, which detects both alive and dead Roblox characters.
-- **Real-time ready**: Orca runs in about 2 ms per frame as a TensorRT FP16 engine on an RTX 5080, with no measurable accuracy loss.
-- **Public dataset and test set** hosted on Roboflow.
+The best model, Orca, scores **70.2% mAP50-95** (86.9% mAP50) on a test set it has never seen. As a TensorRT FP16 engine on an RTX 5080 it runs in about 2 ms per frame. All three are normal Ultralytics weights, so you can load, export and fine-tune them the usual way.
 
-![RobloxYolo Detection Sample Image](assets/detections.png)
+![Detection examples](assets/detections.png)
+
+---
+
+## Models
+
+<table>
+<tr>
+<td align="center" width="33%">
+<img src="assets/orca.png" alt="Orca" height="160"/><br/>
+<b>Orca</b><br/>
+<sub>Most accurate</sub>
+</td>
+<td align="center" width="33%">
+<img src="assets/rabbit.png" alt="Rabbit" height="160"/><br/>
+<b>Rabbit</b><br/>
+<sub>Balanced</sub>
+</td>
+<td align="center" width="33%">
+<img src="assets/cheetah.png" alt="Cheetah" height="160"/><br/>
+<b>Cheetah</b><br/>
+<sub>Fastest</sub>
+</td>
+</tr>
+</table>
+
+| Model | File | Architecture | Input size | Parameters | mAP50 | mAP50-95 |
+|---|---|---|---|---|---|---|
+| **Orca** | `models/rblx-yolo-orca.pt` | YOLO26s | 1536 | 9.9M | **86.9%** | **70.2%** |
+| **Rabbit** | `models/rblx-yolo-rabbit.pt` | YOLO26n | 1280 | 2.5M | 79.9% | 61.9% |
+| **Cheetah** | `models/rblx-yolo-cheetah.pt` | YOLO26n | 1024 | 2.5M | 78.4% | 59.3% |
+
+Which one to pick: if you have a decent NVIDIA GPU, use **Orca**. It's the most accurate by a wide margin and it's still fast once exported to TensorRT. **Rabbit** is for weaker GPUs where Orca doesn't keep up. **Cheetah** is for the CPU, older hardware, or when every millisecond counts.
+
+Scores are from Ultralytics `yolo val` on the test set described under [Performance](#performance), each model at its own input size.
 
 ---
 
 ## Quick Start
 
-Install dependencies:
-
 ```bash
 pip install -r requirements.txt
 ```
 
-Run inference on an image:
+```python
+from ultralytics import YOLO
+
+model = YOLO("models/rblx-yolo-orca.pt")
+
+# Each model remembers its own input size, so you don't need to pass imgsz.
+results = model("screenshot.png", conf=0.5)
+results[0].show()
+
+for box in results[0].boxes:
+    x1, y1, x2, y2 = box.xyxy[0].tolist()
+    print(f"character at ({x1:.0f}, {y1:.0f}, {x2:.0f}, {y2:.0f}), confidence {box.conf.item():.2f}")
+```
+
+`conf=0.5` is a good place to start. Go lower if you're missing far-away characters, higher if you're getting false detections.
+
+### Real-time
+
+There's a full example in [`examples/real_time_inference.py`](examples/real_time_inference.py). It grabs the screen with `dxcam`, runs the model in a separate thread and draws the boxes in an overlay window (press `t` to quit). If you want real-time speed, export to TensorRT or ONNX first.
+
+### Exporting
 
 ```python
 from ultralytics import YOLO
 
-# Load a rblx YOLO model
 model = YOLO("models/rblx-yolo-orca.pt")
 
-# Perform object detection on an image (use the model's own image size)
-results = model("sample_images/image1.png", imgsz=1536)
-results[0].show()  # Display results
+# ONNX, for CPU or other runtimes
+model.export(format="onnx")
+
+# TensorRT FP16 for NVIDIA GPUs. A fixed 16:9 input (height, width) fits 1080p, 1440p and 4K frames without padding.
+model.export(format="engine", dynamic=False, quantize="fp16", batch=1, imgsz=[864, 1536])
 ```
 
-### Real-Time Inference
-
-See [`examples/real_time_inference.py`](examples/real_time_inference.py) for a complete real-time example.
-Export to ONNX or TensorRT if you plan to use these models in real time.
-
-### Export a Model
-
-```python
-from ultralytics import YOLO
-
-# Load a rblx YOLO model
-model = YOLO("models/rblx-yolo-orca.pt")
-
-# Export the model to ONNX format for deployment
-path = model.export(format="onnx")  # Returns the path to the exported model
-
-# Export to TensorRT FP16 on CUDA. A fixed 16:9 input (height, width) fits 1080p/1440p/4K frames with no padding.
-path = model.export(format="engine", dynamic=False, quantize="fp16", batch=1, imgsz=[864, 1536])
-```
-
-TensorRT engines are specific to the GPU and TensorRT version they were built on, so build the engine on the machine that will run it.
+TensorRT engines only work on the GPU and TensorRT version they were built with, so build yours on the machine that will run it.
 
 ---
 
-## Available Models
+## Performance
 
-> mAP numbers come from Ultralytics `yolo val` on the 200 image test set, each model at its own image size.
+### The test set
 
-| Model | Architecture | Image Size | mAP50 | mAP50-95 | Best For |
+The test set is 200 desktop screenshots at 2560x1440 from a lot of different games. They contain 506 labeled characters, and 32 of the images have no characters at all. None of the models were trained on these images, and I also removed training images that showed the same scene as a test image. About one in five test characters is under 32 pixels tall at 1536 input, so the set is deliberately hard on far-away characters.
+
+### Accuracy by character size (Orca)
+
+| Character size (longest side at 1536 input) | under 16 px | 16 to 32 px | 32 to 64 px | 64 to 128 px | 128 px and up |
 |---|---|---|---|---|---|
-| **Orca** | YOLO26s | 1536 | **85.7%** | **68.8%** | Maximum accuracy |
-| **Rabbit** | YOLO26n | 1280 | 79.9% | 61.9% | Balance of speed and accuracy |
-| **Cheetah** | YOLO26n | 1024 | 78.4% | 59.3% | Real-time inference, fastest |
+| AP50-95 | 24% | 45% | 69% | 75% | 84% |
 
-<table>
-<tr>
-<td align="center" width="33%">
-<img src="assets/orca.png" alt="Orca" width="180"/><br/>
-<b>Orca</b>
-</td>
-<td align="center" width="33%">
-<img src="assets/rabbit.png" alt="Rabbit" width="180"/><br/>
-<b>Rabbit</b>
-</td>
-<td align="center" width="33%">
-<img src="assets/cheetah.png" alt="Cheetah" width="180"/><br/>
-<b>Cheetah</b>
-</td>
-</tr>
-</table>
+Large and mid-size characters are reliable. Tiny ones are still the hardest part.
 
-### The Test Set
+### Speed
 
-- 200 desktop screenshots at 2560x1440 from many different games, with 506 labeled characters and 32 background images (no characters).
-- No model was trained on it, and training images that show the same scene as a test image were removed before training.
-- About 1 in 5 test characters is smaller than 32 pixels at 1536 input, so the set is hard on far-away characters on purpose.
-### Orca
+Measured on an RTX 5080 at batch 1, with 2560x1440 frames already in memory.
 
-The most powerful and accurate model in the family. YOLO26s at imgsz 1536, reaching **85.7% mAP50** and **68.8% mAP50-95**.
+| Model | PyTorch FP32, full frame | TensorRT FP16, network only |
+|---|---|---|
+| Orca | about 10 ms | about 2.2 ms |
+| Rabbit | about 6 ms | about 1.5 ms |
+| Cheetah | about 5 ms | about 1.5 ms |
 
-- Trained on about **4,800 hand-labeled images** combined with about **9,400 distilled images** (see [How the Models Were Trained](#how-the-models-were-trained)).
+A few things I found while measuring:
 
-### Rabbit
+- FP16 TensorRT engines score within 0.2 points of the PyTorch models, so there's no reason not to use them.
+- On a fast GPU, Rabbit and Cheetah end up about the same speed, because most of the time goes to resizing the frame and copying results, not to the network. On slower GPUs and on the CPU the difference shows up, and that's where Cheetah makes sense.
+- Resizing frames on the GPU, or capturing a smaller part of the screen, saves more time than switching to a smaller model.
 
-YOLO26n at imgsz 1280. A balance of speed and accuracy, reaching 79.9% mAP50 and 61.9% mAP50-95. Trained with the same data and recipe as Orca.
+### Running Orca at a smaller size
 
-### Cheetah
-
-YOLO26n at imgsz 1024. The fastest model, reaching 78.4% mAP50 and 59.3% mAP50-95. Also trained with distillation. Recommended for real-time inference.
-
----
-
-## Speed and Input Size
-
-Measured on an RTX 5080 at batch 1 with 2560x1440 frames already in memory.
-
-| Model | PyTorch FP32 (whole loop) | TensorRT FP16 (network only) | TensorRT FP16 (whole loop) |
-|---|---|---|---|
-| Orca (YOLO26s, 1536) | about 10 ms | 2.2 ms | 6.7 ms |
-| Rabbit (YOLO26n, 1280) | about 6 ms | about 1.5 ms | about 4.3 ms |
-| Cheetah (YOLO26n, 1024) | about 5 ms | about 1.6 ms | about 4.9 ms |
-
-- The FP16 engine of Orca scores within 0.2 points of the PyTorch model, so FP16 is safe to use.
-- At these speeds most of the time per frame is resizing the frame on the CPU, not the network itself. Resizing on the GPU, or capturing a smaller region, helps more than a smaller model.
-- A slower GPU will be slower: as a rough guide, an RTX 3060 has about a quarter of the FP16 compute of an RTX 5080.
-
-**Running a model below its image size** (Orca, mAP50-95 on the test set, 16:9 input):
+You can run Orca below 1536 without retraining. This is what it costs (mAP50-95 on the test set, 16:9 input, measured with `model.predict`, which reads about 0.1 points below `yolo val`):
 
 | Input width | 1536 | 1280 | 1024 | 768 | 640 |
 |---|---|---|---|---|---|
-| mAP50-95 | 68.4% | 65.4% | 62.1% | 56.6% | 53.5% |
+| mAP50-95 | 70.1% | 67.1% | 64.0% | 57.9% | 54.7% |
 
-Accuracy falls quickly below 1024, almost all of it on small, far-away characters. If you need a smaller input, Orca at 1024 is still more accurate than the nano models at the same size. (This table uses a slightly different measurement than `yolo val`, so its 1536 value is 0.4 points lower than the table above.)
-
----
-
-## How the Models Were Trained
-
-1. **Hand-labeled data.** About 5,000 images labeled by hand with the spec below, split 80/20 into train and validation. Images from the same capture session or the same scene were kept on the same side of the split, so validation scores are not inflated by near-copies.
-2. **Distillation.** A much slower, more accurate detector (an ensemble of two RF-DETR models and a YOLO model that looks at each frame many times, whole, tiled, mirrored and zoomed; 80.8% mAP50-95 on the test set) labeled thousands of extra gameplay frames from YouTube. Only its confident boxes became labels; image regions with doubtful boxes were painted gray so the student is never taught that a real character is background.
-3. **Fine-tuning.** The YOLO models were fine-tuned for 25 epochs on the hand-labeled plus distilled images, starting from an earlier Roblox-trained model.
-4. **Checkpoint averaging.** The final weights are the average of the checkpoints saved during training. This is a single normal model file, with no extra cost at inference, and it scored 1 to 4 points of mAP50-95 higher than the single best checkpoint in every run tested.
-
-**What made a difference, and what did not**
-
-| Change | Effect on the test set |
-|---|---|
-| Adding distilled frames from games the models had not seen | Clear gain (the largest single improvement) |
-| More frames from the same videos and games | No gain: variety matters, not volume |
-| Checkpoint averaging | +1 to +4 points mAP50-95 |
-| Training longer (150 instead of 25 fine-tune epochs) | No gain |
-| A bigger model (YOLO26m instead of YOLO26s) | No gain on this data |
-| Higher training resolution (2048 instead of 1536) for a fine-tune | No gain |
-| Tiled inference (whole frame plus 2x2 tiles) | About +2 points, at about 3.5x the time per frame |
+It falls off quickly below 1024, almost all of it on small characters. Even at 1024, Orca beats both nano models.
 
 ---
 
-## Training Your Own
+## How they were trained
 
-The dataset is public on Roboflow. You will need a capable GPU machine or Google Colab to train a model.
+It started with about 5,000 screenshots and video frames that I labeled by hand. When splitting them into train and validation, I kept frames from the same session or scene on the same side, so the validation scores aren't inflated by near-duplicates.
+
+That isn't enough data to cover Roblox, and labeling everything by hand doesn't scale. So I built a much slower and more accurate detector ensemble and used it to label tens of thousands of extra gameplay frames from hundreds of games. Only its confident detections became labels. Anywhere it was unsure got masked out, so the models are never taught that a real character is background. This made the biggest difference of anything I tried. One thing I learned: frames from *new* games help a lot, while more frames from games the models had already seen barely help.
+
+Orca also saw a small set of synthetic images with the cases models struggle with most: dark scenes, overlapping characters, characters cut off by the screen edge, and tiny characters.
+
+Finally, each released model is an average of the checkpoints saved during its training run. It's still a normal model file and costs nothing extra at inference, and it beat the single best checkpoint every time I tried it.
+
+Rabbit and Cheetah were trained the same way on an earlier version of the data.
+
+---
+
+## Training your own
+
+The hand-labeled dataset and the test set are both public on Roboflow. You'll need a decent GPU or Google Colab.
 
 | Resource | Link |
 |---|---|
 | Dataset | https://universe.roboflow.com/rolpon/roblox-yolo26-dataset |
-| Test Set | https://universe.roboflow.com/rolpon/roblox-public-200img-set |
+| Test set | https://universe.roboflow.com/rolpon/roblox-public-200img-set |
 
 ```python
 from ultralytics import YOLO
 
-# Load a YOLO model from COCO
-model = YOLO("yolo26s.pt")
+# Fine-tune one of these models, or start from "yolo26s.pt" to train from COCO
+model = YOLO("models/rblx-yolo-orca.pt")
 
-# Train a YOLO model. Set the optimizer explicitly: with optimizer="auto", Ultralytics switches between
-# AdamW and MuSGD depending on dataset size and epochs, which makes runs hard to compare.
-model.train(data="data.yaml", imgsz=1536, epochs=250, patience=250, batch=5, workers=7,
-            optimizer="MuSGD", lr0=0.01, save_period=5, name="roblox-yolo-custom")
+# Set the optimizer yourself. With optimizer="auto", Ultralytics switches between AdamW and MuSGD
+# depending on dataset size and epochs, which makes runs hard to compare.
+model.train(data="data.yaml", imgsz=1536, epochs=25, batch=5, workers=7,
+            optimizer="MuSGD", lr0=0.002, lrf=0.1, warmup_epochs=1, save_period=5, name="roblox-yolo-custom")
 ```
 
-**Training trends**
+Some tips from my own runs:
 
-- Start from `yolo26s.pt` for a new model, or from one of these models to fine-tune (far fewer epochs are needed).
-- 150 to 250 epochs from COCO; 25 epochs is enough for a fine-tune.
-- imgsz 1536 works well; above 1024 clearly helps with small characters.
-- Batch 5 at imgsz 1536 fits in 16 GB of VRAM (workers 7).
-- Save checkpoints during training (`save_period=5`) so you can average them afterwards.
-- Do not reuse the test set for choosing checkpoints; pick on the validation split and check the test set once at the end.
-
-**Dataset creation**
-
-1. Copy in hand-labeled data.
-2. Split train/val 80%/20%, keeping frames from the same session or video on the same side.
+- Fine-tuning one of these models takes about 25 epochs. Training from COCO takes 150 to 250 (use `lr0=0.01`).
+- Input sizes above 1024 help a lot with small characters. 1536 works well.
+- Batch 5 at 1536 fits in 16 GB of VRAM.
+- Keep checkpoints during training (`save_period`) so you can average them afterwards.
+- Pick checkpoints using the validation split only, and look at the test set once at the end.
 
 ---
 
-## Documentation
+## Labeling spec
 
-### Labeling Spec
+If you add your own data, label it the same way, or the models will learn two different ideas of what a box is.
 
-- Include all visible pixels of a character (1 box per character), with the exceptions below.
-- If multiple characters intersect, attempt to give each character a unique box.
-- Use the tightest possible bounding boxes, with no name tags included.
-- If individual bounding boxes are truly not possible, use a single-blob box.
-- Boxes include all extents of a character, including wings, large arms, and accessories. Particles are not counted.
-- Highlights on characters are counted.
-- All non-Roblox images are background (real-life photos, browsers, desktop environments, the Roblox website, etc.).
-- Fake Roblox characters, UI character renders, and paintings do not count as characters. Only NPCs and player characters count.
-- Non-standard 3D characters (custom rigs, monsters and mascot characters such as game entities) count as characters, as does anything with the Roblox body style. Drawings, fan art and real-life people do not.
-- Dead characters are accounted for, either in their own class or merged with the character class.
+- One box per character, as tight as possible, covering every visible pixel. No name tags.
+- Include the full character: wings, large arms, held items and accessories. Highlights count; particles don't.
+- Give overlapping characters their own boxes when you can. If it really can't be done, one box for the group is fine.
+- Players and NPCs count, including custom rigs, monsters, mascots and anything with the Roblox body style.
+- These are not characters: character renders in menus, leaderboard statues, paintings, drawings, fan art and real people.
+- Anything that isn't Roblox gameplay is background (real photos, browsers, desktops, the Roblox website).
+- Dead characters are labeled as characters.
 
-### Known Pain Points
+---
 
-Measured on the test set with Orca (share of characters found at its best confidence threshold):
+## Limitations
 
-| Pain Point | How Orca does |
-|---|---|
-| Tiny characters (under 16 px at 1536 input) | Finds about 1 in 5 |
-| Small characters (16 to 32 px) | Finds a bit over half |
-| Dark scenes and dark characters | Finds about 2 in 3 |
-| Heavily overlapping characters | Finds a bit under half |
-| Characters cut off by the frame edge | Finds about 2 in 3 |
-| Large characters (64 px and up) | Finds over 80% |
+No detector is perfect, and these are the places where these ones struggle:
 
-Most remaining false detections are leaderboard and donation-board statues, cartoon or tutorial figures in the game UI, and small blocky objects such as rocks and trees. Other known weak spots: UI and overlays on top of characters, effects and particles on characters, close-up shots, and MM2 paintings.
+- **Tiny characters** (under 16 px at the model's input) get missed a lot. A bigger input size or tiled inference helps.
+- **Hard scenes:** dark lighting, characters stacked on top of each other, characters cut off by the screen edge, and characters behind UI or effects.
+- **False detections** mostly come from leaderboard and donation-board statues, character figures in menus and tutorials, and small blocky things like rocks and trees.
+- **Mobile and video:** the models were trained on desktop gameplay, so mobile layouts, unusual camera angles and heavily compressed video can lower accuracy.
 
 ---
 
 ## Disclaimers & Disclosures
 
-**AI assistance.** Claude (Anthropic) assisted with planning, training, evaluation, and the tooling behind these models, including parts of this README. All labels in the hand-labeled dataset were made or reviewed by a human.
+**AI assistance.** I used Claude (Anthropic) to help with planning, training, evaluation and tooling, including parts of this README. Every label in the hand-labeled dataset was made or checked by me.
 
-**Intended use.** These models were built for hobby projects, research, and utility tools such as bots, analytics, and accessibility aids. They are not meant for cheating.
+**Intended use.** I made these for hobby projects, research and utility tools like bots, analytics and accessibility aids. They aren't meant for cheating.
 
-**Aimbots.** The models can technically be used for aiming assistance. I do not prohibit this, but I strongly discourage it, and I will not accept issues or pull requests related to aimbots. Using automated aiming or input programs in Roblox violates the Roblox Terms of Use and can get your account banned. You are responsible for how you use these models.
+**Aimbots.** The models can technically be used for aim assistance. I don't prohibit it, but I strongly discourage it, and I won't accept issues or pull requests about aimbots. Automated aiming or input programs break the Roblox Terms of Use and can get your account banned. What you do with the models is on you.
 
-**No affiliation.** This project is not affiliated with or endorsed by Roblox Corporation. Roblox is a trademark of Roblox Corporation. Images in the dataset are screenshots of Roblox gameplay.
+**No affiliation.** This project isn't affiliated with or endorsed by Roblox Corporation. Roblox is a trademark of Roblox Corporation. The dataset images are screenshots of Roblox gameplay, and the games and assets in them belong to their creators.
 
-**No warranty.** The models are provided as is, without any guarantee of accuracy. See [LICENSE](LICENSE) for the full terms.
+**License.** The code and model weights are released under [AGPL-3.0](LICENSE), the same license as the Ultralytics YOLO framework they're built on. They come as is, with no guarantee of accuracy.
 
-Watch the labeling process: https://youtu.be/3P5Tr6R4R_I
+If you want to see how the labeling was done, I recorded it: https://youtu.be/3P5Tr6R4R_I
