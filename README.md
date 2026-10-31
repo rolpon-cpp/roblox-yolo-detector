@@ -104,12 +104,14 @@ Measured with `model.predict` at 16:9 input without retraining. This method read
 
 ## Training
 
-Training data consists of approximately 5,000 hand-labeled images and a larger set of gameplay frames labeled automatically by a detector ensemble. Automatic labels were limited to high-confidence detections. Orca was additionally trained on synthetic images of difficult cases. Released weights are averages of checkpoints from a single training run.
+Training data consists of approximately 5,000 hand-labeled images and a larger set of automatically labeled gameplay frames. Automatic labels were limited to high-confidence detections. Orca was additionally trained on synthetic images of difficult cases. Released weights are averages of checkpoints from a single training run.
 
 The hand-labeled dataset and the test set are available on Roboflow:
 
 - Dataset: https://universe.roboflow.com/rolpon/roblox-yolo26-dataset
 - Test set: https://universe.roboflow.com/rolpon/roblox-public-200img-set
+
+Some images were removed from the published datasets because they contained private information, so the final sizes are slightly lower than expected: the dataset has about 5,600 images (about 6,000 before), and the test set has 199 images (200 before). The results in [Evaluation](#evaluation) were measured on the original 200-image test set.
 
 Example fine-tuning command:
 
