@@ -221,7 +221,15 @@ Measured with `model.predict`, which reads up to about 1 point below `yolo val` 
 
 ## 📚 Training
 
-Training data consists of approximately 5,000 hand-labeled images and a larger set of automatically labeled gameplay frames. Automatic labels were limited to high-confidence detections. Orca was additionally trained on synthetic images of difficult cases, and Giraffe was trained on the hand-labeled images only. Released weights are averages of checkpoints from a single training run, as in [stochastic weight averaging](https://arxiv.org/abs/1803.05407).
+### Training pipeline
+
+1. **Collect.** Gameplay frames come from public videos and screenshots. Frames are screened automatically for non-gameplay and inappropriate content, then reviewed by eye before use.
+2. **Hand-label.** A core set is labeled by hand following the [Labeling Specification](#-labeling-specification). Each box is checked for tightness, not only for presence.
+3. **Auto-label.** Additional frames are labeled by a stronger offline ensemble. Only high-confidence boxes are kept, and a sample is checked by eye.
+4. **Train.** YOLO26 (nano and small) and RF-DETR (Small) start from COCO weights and train at high input resolution (1536). Optimizer and learning rate are set explicitly in every run.
+5. **Average.** Released weights average the checkpoints of one training run over a window of epochs. The window is chosen on a validation set that is separate from the test set.
+6. **Evaluate.** Models are scored on the held-out test set by mAP50-95, mAP50 and recall, overall and by character size. Speed is measured on an RTX 5080 at batch 1.
+7. **Export.** Real-time use goes through a TensorRT FP16 engine. The engine is built for one fixed input size.
 
 The hand-labeled dataset and the test set are available on Roboflow:
 
@@ -240,6 +248,20 @@ model.train(data="data.yaml", imgsz=1536, epochs=25, batch=5, optimizer="MuSGD",
 ```
 
 Set `optimizer` explicitly. The `auto` setting selects different optimizers depending on dataset size. Giraffe can be fine-tuned with RF-DETR's training API; see the [RF-DETR documentation](https://rfdetr.roboflow.com/).
+
+### Development log
+
+| When | Milestone |
+|---|---|
+| Aug 2026 | Repository created with the first YOLO models. |
+| Sep 2026 | First public release: nano and small YOLO models, with real-time and export examples. |
+| Sep to Oct 2026 | Training moved to a larger, deduplicated dataset with a session-grouped validation split, so validation scores stop rewarding memorized scenes. |
+| Oct 2026 | Checkpoint averaging adopted for every release. It gave the largest reliable gain per unit of effort. |
+| Oct 2026 | RF-DETR added as a fourth model (Giraffe), the most accurate model in the lineup. |
+| Oct 2026 | Automatic labels from the stronger ensemble added as training data; gains were confirmed on the held-out test set. |
+| Oct 2026 | TensorRT FP16 deployment measured for every model. Accuracy loss from FP16 was below 0.002 mAP50-95. |
+| Late Oct 2026 | Orca retrained on the larger dataset and re-published. |
+| Nov 2026 | Additional test set adopted for model comparisons. |
 
 ## 📝 Labeling Specification
 
