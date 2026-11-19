@@ -25,10 +25,22 @@ Roblox YOLO is a family of four [object detection](https://docs.ultralytics.com/
 
 Find framework details in the [Ultralytics Docs](https://docs.ultralytics.com/) and the [RF-DETR documentation](https://rfdetr.roboflow.com/). The hand-labeled [training dataset](https://universe.roboflow.com/rolpon/roblox-yolo26-dataset) and [test set](https://universe.roboflow.com/rolpon/roblox-public-200img-set) are on [Roboflow Universe](https://universe.roboflow.com/). Report bugs and ask questions through [GitHub Issues](https://github.com/rolpon-cpp/roblox-yolo-detector/issues).
 
+<p align="center">
+  <img width="100%" src="assets/demo.webp" alt="Orca tracking Roblox characters in a fight, with box IDs that follow each character">
+  <br><sub>Orca with <a href="https://docs.ultralytics.com/modes/track/">ByteTrack</a> on real gameplay: each character keeps its ID from frame to frame.</sub>
+</p>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/performance-dark.png">
   <img width="100%" src="assets/performance.png" alt="mAP50-95 against time per frame for Cheetah, Rabbit, Orca and Giraffe, with TensorRT FP16 and PyTorch FP32">
 </picture>
+
+## 🎮 What you can build
+
+- **Bots and game AI:** give an agent eyes, so it can find, follow or avoid other players and NPCs.
+- **Video analysis:** count players, follow characters across a clip with [Track mode](https://docs.ultralytics.com/modes/track/), or find the busiest moments in hours of gameplay.
+- **Dataset labeling:** pre-label new Roblox screenshots and only fix the mistakes, instead of drawing every box by hand ([how the training data was labeled](https://www.youtube.com/watch?v=3P5Tr6R4R_I)).
+- **Fun projects:** [Bad Apple, but it's Roblox screenshots](https://www.youtube.com/watch?v=IgFRKvPhpbA) rebuilds the music video out of thousands of tiny screenshots from the training data.
 
 ## 📄 Documentation
 
@@ -148,7 +160,10 @@ TensorRT engines must be built on the GPU that will run them. Install the [Tenso
 
 ## ✨ Models
 
-![Detection examples](assets/detections.png)
+<p align="center">
+  <img width="100%" src="assets/detections.jpg" alt="Orca detections on nine test screenshots from different Roblox games">
+  <br><sub>Orca on held-out test screenshots: shooters, a crowded lobby, dark corridors, far-away players, unusual avatars and a busy UI.</sub>
+</p>
 
 Roblox YOLO comes in four models, from the fastest (Cheetah) to the most accurate (Giraffe). Orca is recommended where an NVIDIA GPU is available. Rabbit and Cheetah are intended for lower-end hardware. Giraffe gives the highest accuracy for about four to seven times Orca's time per frame.
 
@@ -199,6 +214,14 @@ Orca finds small and mid-size characters best. Giraffe leads for characters of 6
 
 </details>
 
+<details open><summary>The four models on one frame</summary>
+
+<img width="100%" src="assets/compare.jpg" alt="Cheetah, Rabbit, Orca and Giraffe on the same test frame with far-away characters">
+
+A held-out test frame with far-away characters at confidence 0.4. The nano models miss some of the smallest players; Orca finds all nine.
+
+</details>
+
 <details><summary>Accuracy at lower input sizes</summary>
 
 <picture>
@@ -231,6 +254,15 @@ Measured with `model.predict`, which reads up to about 1 point below `yolo val` 
 6. **Evaluate.** Models are scored on the held-out test set by mAP50-95, mAP50 and recall, overall and by character size. Speed is measured on an RTX 5080 at batch 1.
 7. **Export.** Real-time use goes through a TensorRT FP16 engine. The engine is built for one fixed input size.
 
+### Dataset at a glance
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dataset-dark.png">
+  <img width="100%" src="assets/dataset.png" alt="Character size distribution, where characters appear in the frame, and the average colour inside each labeled box">
+</picture>
+
+Most characters are 32 to 256 px tall at the model's input size, and they cluster in the middle of the screen, where third-person cameras put the player. About a quarter of all boxes are grayish on average: dark scenes, black outfits and gray maps.
+
 The hand-labeled dataset and the test set are available on Roboflow:
 
 - Dataset: https://universe.roboflow.com/rolpon/roblox-yolo26-dataset
@@ -262,6 +294,8 @@ Set `optimizer` explicitly. The `auto` setting selects different optimizers depe
 | Oct 2026 | TensorRT FP16 deployment measured for every model. Accuracy loss from FP16 was below 0.002 mAP50-95. |
 | Late Oct 2026 | Orca retrained on the larger dataset and re-published. |
 | Nov 2026 | Additional test set adopted for model comparisons. |
+| Nov 2026 | Synthetic training frames generated in Roblox Studio tested: a small gain when mixed with real data, none on their own. |
+| Nov 2026 | New README visuals: tracking demo, example grid, model comparison and failure cases. |
 
 ## 📝 Labeling Specification
 
@@ -273,6 +307,8 @@ Set `optimizer` explicitly. The `auto` setting selects different optimizers depe
 - Images that are not Roblox gameplay are treated as background.
 
 ## 🚧 Limitations
+
+<img width="100%" src="assets/failures.jpg" alt="Four Orca mistakes on test screenshots: a leaderboard statue boxed by mistake, and missed characters in the dark, in a vehicle and under 16 px">
 
 - Characters smaller than 16 px at the model input size are frequently missed.
 - Recall is reduced in dark scenes and for overlapping or partially visible characters.
