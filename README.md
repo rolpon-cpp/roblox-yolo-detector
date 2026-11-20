@@ -26,6 +26,12 @@ Roblox YOLO is a family of four [object detection](https://docs.ultralytics.com/
 Find framework details in the [Ultralytics Docs](https://docs.ultralytics.com/) and the [RF-DETR documentation](https://rfdetr.roboflow.com/). The hand-labeled [training dataset](https://universe.roboflow.com/rolpon/roblox-yolo26-dataset) and [test set](https://universe.roboflow.com/rolpon/roblox-public-200img-set) are on [Roboflow Universe](https://universe.roboflow.com/). Report bugs and ask questions through [GitHub Issues](https://github.com/rolpon-cpp/roblox-yolo-detector/issues).
 
 <p align="center">
+  <a href="https://huggingface.co/spaces/Rolpon/roblox-yolo-detector"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Try%20it%20online-Hugging%20Face%20Space-FFD21E" alt="Try it online on Hugging Face"></a>
+</p>
+
+Try the models without installing anything: drop a screenshot into the [online demo](https://huggingface.co/spaces/Rolpon/roblox-yolo-detector). It runs in your browser, so your image never leaves your computer.
+
+<p align="center">
   <img width="100%" src="assets/demo.webp" alt="Orca tracking Roblox characters in a fight, with box IDs that follow each character">
   <br><sub>Orca with <a href="https://docs.ultralytics.com/modes/track/">ByteTrack</a> on real gameplay: each character keeps its ID from frame to frame.</sub>
 </p>
@@ -296,6 +302,7 @@ Set `optimizer` explicitly. The `auto` setting selects different optimizers depe
 | Nov 2026 | Additional test set adopted for model comparisons. |
 | Nov 2026 | Synthetic training frames generated in Roblox Studio tested: a small gain when mixed with real data, none on their own. |
 | Nov 2026 | New README visuals: tracking demo, example grid, model comparison and failure cases. |
+| Nov 2026 | Online demo on Hugging Face: Orca, Rabbit and Cheetah run in the browser with ONNX Runtime Web. |
 
 ## 📝 Labeling Specification
 
