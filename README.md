@@ -40,7 +40,7 @@ Try the models without installing anything: drop a screenshot into the [online d
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/performance-dark.png">
-  <img width="100%" src="assets/performance.png" alt="mAP50-95 against time per frame for Cheetah, Rabbit, Orca and Giraffe, with TensorRT FP16 and PyTorch FP32">
+  <img width="100%" src="assets/performance.png" alt="mAP50-95 against time per frame for Cheetah, Rabbit, Orca, Giraffe and Eagle, with TensorRT FP16 and PyTorch FP32">
 </picture>
 
 ## 🎮 What you can build
@@ -254,10 +254,10 @@ The settings are in [`eagle/config.json`](eagle/config.json) and the code is in 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/size-ap-dark.png">
-  <img width="100%" src="assets/size-ap.png" alt="AP50-95 by character size for the four models">
+  <img width="100%" src="assets/size-ap.png" alt="AP50-95 by character size for Cheetah, Rabbit, Orca, Giraffe and Eagle">
 </picture>
 
-The chart shows the four single models; Eagle is in the table. Size is the longest side of a character's bounding box at 1536 input. Values are AP50-95 (%), scored from `model.predict` output.
+Size is the longest side of a character's bounding box at 1536 input. Values are AP50-95 (%), scored from `model.predict` output.
 
 | Size | under 16 px | 16 to 32 px | 32 to 64 px | 64 to 128 px | 128 px and up |
 |---|---|---|---|---|---|
@@ -272,11 +272,11 @@ Of the single models, Orca finds small and mid-size characters best, and Giraffe
 
 </details>
 
-<details open><summary>The four models on one frame</summary>
+<details open><summary>The five models on one frame</summary>
 
-<img width="100%" src="assets/compare.jpg" alt="Cheetah, Rabbit, Orca and Giraffe on the same test frame with far-away characters">
+<img width="100%" src="assets/compare.jpg" alt="Cheetah, Rabbit, Orca, Giraffe and Eagle on the same test frame with far-away characters">
 
-A held-out test frame with far-away characters at confidence 0.4. The nano models miss some of the smallest players; Orca finds all nine.
+A held-out test frame with far-away characters at confidence 0.4. The nano models miss some of the smallest players. Orca finds all nine, while Giraffe and Eagle each miss one of the tiniest ones, so a bigger model is not better on every single frame.
 
 </details>
 
@@ -287,7 +287,7 @@ A held-out test frame with far-away characters at confidence 0.4. The nano model
   <img width="100%" src="assets/input-size.png" alt="mAP50-95 at input widths from 640 to 1536 for the four models">
 </picture>
 
-mAP50-95 (%) when the frame is shrunk to a smaller input, without retraining. YOLO inputs are 16:9 (for example 1024x576); Giraffe's are square.
+mAP50-95 (%) when the frame is shrunk to a smaller input, without retraining. Eagle is not included: it already runs each model at several fixed sizes. YOLO inputs are 16:9 (for example 1024x576); Giraffe's are square.
 
 | Input width | 1536 | 1280 | 1024 | 768 | 640 |
 |---|---|---|---|---|---|
@@ -306,7 +306,7 @@ Measured with `model.predict`, which reads up to about 1 point below `yolo val` 
 
 1. **Collect.** Gameplay frames come from public videos and screenshots. Frames are screened automatically for non-gameplay and inappropriate content, then reviewed by eye before use.
 2. **Hand-label.** A core set is labeled by hand following the [Labeling Specification](#-labeling-specification). Each box is checked for tightness, not only for presence.
-3. **Auto-label.** Additional frames are labeled by a stronger offline ensemble. Only high-confidence boxes are kept, and a sample is checked by eye.
+3. **Auto-label.** Additional frames are labeled by a stronger offline ensemble (the one released as [Eagle](#eagle-details)). Only high-confidence boxes are kept, and a sample is checked by eye.
 4. **Train.** YOLO26 (nano and small) and RF-DETR (Small) start from COCO weights and train at high input resolution (1536). Optimizer and learning rate are set explicitly in every run.
 5. **Average.** Released weights average the checkpoints of one training run over a window of epochs. The window is chosen on a validation set that is separate from the test set.
 6. **Evaluate.** Models are scored on the held-out test set by mAP50-95, mAP50 and recall, overall and by character size. Speed is measured on an RTX 5080 at batch 1.
@@ -348,13 +348,14 @@ Set `optimizer` explicitly. The `auto` setting selects different optimizers depe
 | Sep to Oct 2026 | Training moved to a larger, deduplicated dataset with a session-grouped validation split, so validation scores stop rewarding memorized scenes. |
 | Oct 2026 | Checkpoint averaging adopted for every release. It gave the largest reliable gain per unit of effort. |
 | Oct 2026 | RF-DETR added as a fourth model (Giraffe), the most accurate model in the lineup. |
+| Oct 2026 | The ensemble behind Eagle built from the best models, tiles, zoom and box tightening: 80.8% mAP50-95 on the test set in the first version, 81.2% in the current one. |
 | Oct 2026 | Automatic labels from the stronger ensemble added as training data; gains were confirmed on the held-out test set. |
 | Oct 2026 | TensorRT FP16 deployment measured for every model. Accuracy loss from FP16 was below 0.002 mAP50-95. |
 | Late Oct 2026 | Orca retrained on the larger dataset and re-published. |
 | Nov 2026 | Additional test set adopted for model comparisons. |
 | Nov 2026 | Synthetic training frames generated in Roblox Studio tested: a small gain when mixed with real data, none on their own. |
 | Nov 2026 | New README visuals: tracking demo, example grid, model comparison and failure cases. |
-| Nov 2026 | Eagle added: an ensemble of five models, about 81% mAP50-95 on the test set, for labeling and offline use. |
+| Nov 2026 | Eagle released: five models in one detector, about 81% mAP50-95 on the test set, 5.7 s per frame (2.8 s in half precision), for labeling and offline use. README charts and comparison updated. |
 | Nov 2026 | Online demo on Hugging Face: Orca, Rabbit and Cheetah run in the browser with ONNX Runtime Web. |
 
 ## 📝 Labeling Specification
