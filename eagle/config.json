@@ -1,0 +1,157 @@
+{
+ "models": {
+  "rfdetr_c": {
+   "path": "models/eagle/rblx-rfdetr-c.pth"
+  },
+  "giraffe": {
+   "path": "models/rblx-rfdetr-giraffe.pth"
+  },
+  "rfdetr_b": {
+   "path": "models/eagle/rblx-rfdetr-b.pth"
+  },
+  "rfdetr_medium": {
+   "path": "models/eagle/rblx-rfdetr-medium.pth"
+  },
+  "yolo_2048": {
+   "path": "models/eagle/rblx-yolo-2048.pt",
+   "imgsz": 2048
+  }
+ },
+ "stage1": {
+  "members": [
+   {
+    "model": "rfdetr_b",
+    "view": "full@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "giraffe",
+    "view": "tiles3@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "giraffe",
+    "view": "flip@1792",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_b",
+    "view": "tiles2@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "giraffe",
+    "view": "full@2048",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "yolo_2048",
+    "view": "tiles2@1408",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_b",
+    "view": "tflip3@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "giraffe",
+    "view": "full@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_b",
+    "view": "full@2048",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "giraffe",
+    "view": "tflip4@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_c",
+    "view": "full@1792",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_c",
+    "view": "flip@2304",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_medium",
+    "view": "tflip3@1536",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   },
+   {
+    "model": "rfdetr_medium",
+    "view": "flip@2048",
+    "weight": 1.0,
+    "coord_weight": 1.0
+   }
+  ],
+  "iou_thr": 0.8,
+  "skip": 0.02,
+  "topk": 300,
+  "min_tile_side": 0,
+  "conf_power": {}
+ },
+ "max_det": 300,
+ "zoom": {
+  "setting": [
+   4.0,
+   0.25
+  ],
+  "models": [
+   "giraffe",
+   "rfdetr_b",
+   "rfdetr_medium",
+   "rfdetr_c"
+  ],
+  "flip": true,
+  "lo": 0.3,
+  "hi": 1.0,
+  "max_regions": 20,
+  "weight": 1.0,
+  "coord_weight": 1.0,
+  "skip": 0.02,
+  "iou_thr": 0.8,
+  "enabled": true,
+  "size": 1536,
+  "tag": "zoom_v2",
+  "ctx": 4.0,
+  "min_frac": 0.25
+ },
+ "refine": {
+  "enabled": true,
+  "setting": [
+   2.0,
+   0.1
+  ],
+  "models": [
+   "giraffe"
+  ],
+  "flip": true,
+  "min_conf": 0.1,
+  "max_boxes": 60,
+  "alpha": 0.5,
+  "min_iou": 0.8,
+  "ctx": 2.0,
+  "min_frac": 0.1,
+  "size": 1536
+ }
+}

@@ -9,7 +9,7 @@
 <div>
     <a href="https://docs.ultralytics.com/models/yolo26/"><img src="https://img.shields.io/badge/YOLO-26-blue" alt="YOLO26"></a>
     <a href="https://docs.ultralytics.com/tasks/detect/"><img src="https://img.shields.io/badge/task-object%20detection-green" alt="Object detection"></a>
-    <a href="#-models"><img src="https://img.shields.io/badge/mAP50--95-70.2%25-brightgreen" alt="mAP50-95 70.2%"></a>
+    <a href="#-models"><img src="https://img.shields.io/badge/mAP50--95-up%20to%2081%25-brightgreen" alt="mAP50-95 up to 81%"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-lightgrey" alt="License AGPL-3.0"></a>
     <br>
     <a href="https://github.com/roboflow/rf-detr"><img src="https://img.shields.io/badge/RF--DETR-Small-6706CE" alt="RF-DETR Small"></a>
@@ -22,6 +22,8 @@
 <br>
 
 Roblox YOLO is a family of four [object detection](https://docs.ultralytics.com/tasks/detect/) models that find [Roblox](https://www.roblox.com/) characters in screenshots and video frames. Three are built on [Ultralytics YOLO26](https://docs.ultralytics.com/models/yolo26/) and one on [RF-DETR](https://github.com/roboflow/rf-detr). Their training data covers gameplay from several hundred Roblox games, and the models are **fast**, **accurate** and **easy to use**. Every model predicts a single class, `character`, which covers player avatars, NPCs, custom rigs and dead characters, and runs in [PyTorch](https://pytorch.org/) or as an [ONNX](https://onnx.ai/) or [NVIDIA TensorRT](https://developer.nvidia.com/tensorrt) export for real-time use.
+
+For the highest accuracy there is also **Eagle**, an ensemble of five of these detectors that scores about 81% mAP50-95 on the test set. It takes seconds per frame, so it is meant for labeling and offline work, not real time (see [Models](#-models)).
 
 Find framework details in the [Ultralytics Docs](https://docs.ultralytics.com/) and the [RF-DETR documentation](https://rfdetr.roboflow.com/). The hand-labeled [training dataset](https://universe.roboflow.com/rolpon/roblox-yolo26-dataset) and [test set](https://universe.roboflow.com/rolpon/roblox-public-200img-set) are on [Roboflow Universe](https://universe.roboflow.com/). Report bugs and ask questions through [GitHub Issues](https://github.com/rolpon-cpp/roblox-yolo-detector/issues).
 
@@ -65,7 +67,7 @@ cd roblox-yolo-detector
 pip install -r requirements.txt
 ```
 
-Giraffe also needs the [`rfdetr`](https://pypi.org/project/rfdetr/) package:
+Giraffe and Eagle also need the [`rfdetr`](https://pypi.org/project/rfdetr/) package:
 
 ```bash
 pip install rfdetr
@@ -121,6 +123,27 @@ for box, conf in zip(detections.xyxy, detections.confidence):
 
 `predict` returns [supervision](https://supervision.roboflow.com/) `Detections`. Pass a path that includes a folder, as above, or an absolute path: a bare file name is looked up in RF-DETR's download cache instead.
 
+### Eagle (maximum accuracy, slow)
+
+```python
+from eagle import Eagle
+
+det = Eagle(half=True)                 # half=True runs the RF-DETR members in half precision, about 2x faster on a GPU
+d = det.predict("screenshot.png")       # a path or a BGR image array
+sure = d.above(0.4)                    # boxes at confidence 0.4 or more
+
+for box, conf in zip(sure.boxes, sure.conf):
+    print(box.tolist(), float(conf))  # x1, y1, x2, y2 in pixels
+```
+
+Run it from the repository root, so that it finds the weights in `models/`. For a whole folder, with label files and drawn copies:
+
+```bash
+python examples/eagle_predict.py --source screenshots/ --out eagle_out --draw --half
+```
+
+Eagle loads five models at once and needs a CUDA GPU to be practical. It does not export to ONNX or TensorRT.
+
 ### Export
 
 Export the YOLO models to [ONNX](https://docs.ultralytics.com/integrations/onnx/) or [TensorRT](https://docs.ultralytics.com/integrations/tensorrt/) with [Export mode](https://docs.ultralytics.com/modes/export/). Use a fixed 16:9 input that matches the model, so a 16:9 frame fills it without padding:
@@ -171,20 +194,21 @@ TensorRT engines must be built on the GPU that will run them. Install the [Tenso
   <br><sub>Orca on held-out test screenshots: shooters, a crowded lobby, dark corridors, far-away players, unusual avatars and a busy UI.</sub>
 </p>
 
-Roblox YOLO comes in four models, from the fastest (Cheetah) to the most accurate (Giraffe). Orca is recommended where an NVIDIA GPU is available. Rabbit and Cheetah are intended for lower-end hardware. Giraffe gives the highest accuracy for about four to seven times Orca's time per frame.
+Roblox YOLO comes in four single models, from the fastest (Cheetah) to the most accurate (Giraffe), plus Eagle, which combines five models for the best accuracy. Orca is recommended where an NVIDIA GPU is available. Rabbit and Cheetah are intended for lower-end hardware. Giraffe gives the highest accuracy of the single models for about four to seven times Orca's time per frame. Eagle adds about eight more points of mAP on top of Giraffe, but needs several seconds per frame.
 
 <table align="center">
 <tr>
-<td align="center" width="25%"><img src="assets/cheetah.png" alt="Cheetah" height="160"/><br/><b>Cheetah</b></td>
-<td align="center" width="25%"><img src="assets/rabbit.png" alt="Rabbit" height="160"/><br/><b>Rabbit</b></td>
-<td align="center" width="25%"><img src="assets/orca.png" alt="Orca" height="160"/><br/><b>Orca</b></td>
-<td align="center" width="25%"><img src="assets/giraffe.png" alt="Giraffe" height="160"/><br/><b>Giraffe</b></td>
+<td align="center" width="20%"><img src="assets/cheetah.png" alt="Cheetah" height="160"/><br/><b>Cheetah</b></td>
+<td align="center" width="20%"><img src="assets/rabbit.png" alt="Rabbit" height="160"/><br/><b>Rabbit</b></td>
+<td align="center" width="20%"><img src="assets/orca.png" alt="Orca" height="160"/><br/><b>Orca</b></td>
+<td align="center" width="20%"><img src="assets/giraffe.png" alt="Giraffe" height="160"/><br/><b>Giraffe</b></td>
+<td align="center" width="20%"><img src="assets/eagle.png" alt="Eagle" height="160"/><br/><b>Eagle</b></td>
 </tr>
 </table>
 
 <details open><summary>Detection (Roblox test set)</summary>
 
-See the [Detection Docs](https://docs.ultralytics.com/tasks/detect/) for usage examples. All four models detect one class, `character`.
+See the [Detection Docs](https://docs.ultralytics.com/tasks/detect/) for usage examples. All five detect one class, `character`.
 
 | Model | Architecture | size<br><sup>(pixels)</sup> | mAP<sup>test<br>50-95</sup> | mAP<sup>test<br>50</sup> | Speed<br><sup>RTX 5080 PyTorch FP32<br>(ms)</sup> | Speed<br><sup>RTX 5080 TensorRT FP16<br>(ms)</sup> | params<br><sup>(M)</sup> | FLOPs<br><sup>(B)</sup> |
 |---|---|---|---|---|---|---|---|---|
@@ -192,10 +216,37 @@ See the [Detection Docs](https://docs.ultralytics.com/tasks/detect/) for usage e
 | [Rabbit](models/rblx-yolo-rabbit.pt) | [YOLO26n](https://docs.ultralytics.com/models/yolo26/) | 1280 | 61.9 | 79.9 | 5.6 | 1.5 | 2.5 | 13.6 |
 | [Orca](models/rblx-yolo-orca.pt) | [YOLO26s](https://docs.ultralytics.com/models/yolo26/) | 1536 | 70.2 | 86.9 | 9.5 | 2.2 | 9.9 | 74.5 |
 | [Giraffe](models/rblx-rfdetr-giraffe.pth) | [RF-DETR Small](https://github.com/roboflow/rf-detr) | 1536 | 72.7 | 90.0 | 62.4 | 9.3 | 34.9 | 431.4 |
+| [Eagle](#eagle-details) | Ensemble: 4 RF-DETR and 1 YOLO26s | 1408 to 2304 | 81.2 | 92.1 | 5,739 (2,772 with `half=True`) | not exported | not applicable | not applicable |
 
 - **mAP<sup>test</sup>** values are single-model, single-scale results on a held-out test set of 200 screenshots at 2560x1440 with 506 labeled characters and 32 images without characters. No test images, and no training images of the same scenes, were used in training. See [YOLO Performance Metrics](https://docs.ultralytics.com/guides/yolo-performance-metrics/) for what the metrics mean. <br>YOLO scores come from [`yolo val`](https://docs.ultralytics.com/modes/val/) at each model's input size, for example `yolo val model=models/rblx-yolo-orca.pt data=test.yaml`. `yolo val` cannot load RF-DETR, so Giraffe's predictions were scored with the same matching code; on Orca this method reads within 0.1 of `yolo val`. The [public test set](https://universe.roboflow.com/rolpon/roblox-public-200img-set) holds 199 of the 200 images, so a rerun differs slightly.
 - **Speed** is measured on an NVIDIA RTX 5080 at batch 1 with 2560x1440 frames. PyTorch FP32 times are end to end (resizing, network and decoding). TensorRT FP16 times cover the network only, and FP16 engines score within 0.2 mAP of the PyTorch models. The two nano engines are limited by launch overhead on this GPU, so their times are equal within measurement noise.
 - **params** and **FLOPs** are counted for each released file at its input size: 16:9 for YOLO (for example 1536x864) and 1536x1536 for Giraffe, which resizes every frame to a square. Giraffe's weights are stored in half precision to stay under GitHub's file size limit; on the test set it scores the same as the full-precision model.
+
+</details>
+
+<details open><summary id="eagle-details">Eagle (maximum accuracy, offline)</summary>
+
+Eagle is not one network. It runs five models (four RF-DETR models and one YOLO26s, in [`models/eagle/`](models/eagle) and [`models/`](models)) on many versions of each frame: the whole frame at several sizes, the mirrored frame, and grids of zoomed-in tiles, 59 model passes in all. Then it:
+
+1. **Merges** all boxes with a weighted box fusion. A view only counts against a box if it could see that box (a tile cannot see a box outside it).
+2. **Zooms in** again on the most likely characters and fuses the close-up results in.
+3. **Tightens** each confident box with a close-up look, which moves its edges toward the close-up box.
+
+The settings are in [`eagle/config.json`](eagle/config.json) and the code is in [`eagle/`](eagle).
+
+| Stage | mAP<sup>test<br>50-95</sup> |
+|---|---|
+| Giraffe alone | 72.7 |
+| Eagle, models and views only | 79.9 |
+| + zoom | 80.8 |
+| + box tightening (final) | 81.2 |
+
+- The final row was measured again from this repository: the code in `eagle/`, the released weights, Ultralytics 8.4.213, all 200 test images, boxes down to confidence 0.001. It gives **81.2** mAP50-95 and 92.1 mAP50, and 81.1 with `half=True`. The first three rows come from the earlier development runs.
+- **Read the number as about 81, slightly optimistic.** The box tightening stage was kept after a check on this same test set (it added about 0.4 points), and the other settings were tuned on a separate set of 416 images that no member trained on. Without tightening Eagle scores about 80.8.
+- A perfect detector would not score 100 here: two people drawing the same boxes differ by a few pixels, and a noise model fitted to a second blind labeling puts the ceiling near 91 on this test set.
+- **Speed:** a median of 5.7 s per 2560x1440 frame on an RTX 5080 in full precision and 2.8 s with `half=True` (means 6.5 s and 3.1 s: frames with many characters take longer, because each one is zoomed on and tightened). This is for labeling, dataset building and offline analysis, not real time.
+- Confidences are averages over many views, so they run lower than a single model's. Use 0.4 as a default cutoff, and a lower one (0.2 to 0.3) when missing a small or faint character costs more than an extra box.
+- The released weights of the RF-DETR members are stored in half precision, like Giraffe's, to stay under GitHub's file size limit.
 
 </details>
 
@@ -206,7 +257,7 @@ See the [Detection Docs](https://docs.ultralytics.com/tasks/detect/) for usage e
   <img width="100%" src="assets/size-ap.png" alt="AP50-95 by character size for the four models">
 </picture>
 
-Size is the longest side of a character's bounding box at 1536 input. Values are AP50-95 (%), scored from `model.predict` output.
+The chart shows the four single models; Eagle is in the table. Size is the longest side of a character's bounding box at 1536 input. Values are AP50-95 (%), scored from `model.predict` output.
 
 | Size | under 16 px | 16 to 32 px | 32 to 64 px | 64 to 128 px | 128 px and up |
 |---|---|---|---|---|---|
@@ -215,8 +266,9 @@ Size is the longest side of a character's bounding box at 1536 input. Values are
 | Rabbit | 7.2 | 26.9 | 53.6 | 67.7 | 80.6 |
 | Orca | 24.0 | 44.5 | 69.1 | 75.2 | 83.7 |
 | Giraffe | 17.4 | 39.6 | 62.1 | 80.3 | 88.2 |
+| Eagle | 41.7 | 50.2 | 78.7 | 87.5 | 90.6 |
 
-Orca finds small and mid-size characters best. Giraffe leads for characters of 64 px and larger, which make up most of the test set.
+Of the single models, Orca finds small and mid-size characters best, and Giraffe leads for characters of 64 px and larger, which make up most of the test set. Eagle is ahead of all of them at every size.
 
 </details>
 
@@ -302,6 +354,7 @@ Set `optimizer` explicitly. The `auto` setting selects different optimizers depe
 | Nov 2026 | Additional test set adopted for model comparisons. |
 | Nov 2026 | Synthetic training frames generated in Roblox Studio tested: a small gain when mixed with real data, none on their own. |
 | Nov 2026 | New README visuals: tracking demo, example grid, model comparison and failure cases. |
+| Nov 2026 | Eagle added: an ensemble of five models, about 81% mAP50-95 on the test set, for labeling and offline use. |
 | Nov 2026 | Online demo on Hugging Face: Orca, Rabbit and Cheetah run in the browser with ONNX Runtime Web. |
 
 ## 📝 Labeling Specification
@@ -322,6 +375,7 @@ Set `optimizer` explicitly. The `auto` setting selects different optimizers depe
 - Leaderboard statues and character figures in game menus account for most false positives.
 - Training data consists of desktop gameplay. Accuracy on mobile layouts has not been measured.
 - Giraffe needs about four to seven times Orca's time per frame. For real-time use, run it as a TensorRT FP16 engine.
+- Eagle needs several seconds per frame and cannot be exported to TensorRT. It has the same main errors as the single models: leaderboard statues, dark scenes and very small characters.
 
 ## 🤝 Contribute
 
